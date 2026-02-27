@@ -1,0 +1,6 @@
+@MotorCompra.Service_HostAddress = http://localhost:5075
+
+GET {{MotorCompra.Service_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
