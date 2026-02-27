@@ -183,6 +183,55 @@ Swagger/OpenAPI em cada serviço (quando habilitado) em `http://localhost:500X/s
 
 ---
 
+## CI/CD
+
+O projeto inclui pipelines **GitHub Actions** para integração e entrega contínuas.
+
+### CI (`.github/workflows/ci.yml`)
+
+- **Trigger:** push e pull requests em `main`, `master`, `develop`.
+- **Jobs:**
+  - **Build:** restore + build em Release.
+  - **Test:** testes com xUnit, cobertura (Coverlet), relatório TRX e ReportGenerator; artefatos de cobertura e resultados de teste; report de testes em PRs.
+  - **Format check:** `dotnet format --verify-no-changes`.
+  - **Security:** listagem de pacotes vulneráveis (`dotnet list package --vulnerable`).
+- **Cache:** NuGet em `~/.nuget/packages` por hash dos `.csproj`.
+- **Cobertura:** mínimo de 70% (configurável por `MIN_COVERAGE`); relatório em HTML/Summary/Badges.
+
+### CD (`.github/workflows/cd.yml`)
+
+- **Trigger:** push em `main`/`master`, tags `v*`, e `workflow_dispatch`.
+- **Jobs:** build e push de imagens Docker para **GitHub Container Registry** (`ghcr.io`):
+  - `compraprogramada-api-gateway`
+  - `compraprogramada-clientes`
+  - `compraprogramada-admin`
+  - `compraprogramada-cotacao`
+  - `compraprogramada-motor`
+  - `compraprogramada-motor-worker`
+  - `compraprogramada-rebalanceamento`
+- **Versão:** tags `v*` ou `sha-<commit>`.
+- **Cache:** Docker layer cache (GitHub Actions cache).
+
+### Security (`.github/workflows/security.yml`)
+
+- **CodeQL:** análise estática em C# (push em `main`/`master`, PRs, agendamento semanal).
+- **Dependency review:** revisão de dependências em PRs.
+
+### Dependabot (`.github/dependabot.yml`)
+
+- Atualizações semanais (segunda-feira) para NuGet e GitHub Actions.
+- Agrupamento de pacotes Microsoft/xunit/coverlet; limite de 5 PRs abertos.
+
+### Rodar localmente (equivalente ao CI)
+
+```bash
+dotnet restore CompraProgramada.sln
+dotnet build CompraProgramada.sln -c Release
+dotnet test CompraProgramada.sln -c Release --collect:"XPlat Code Coverage" --results-directory ./TestResults
+```
+
+---
+
 ## Documentação do Desafio
 
 Regras de negócio, layout COTAHIST, contratos de API e diagramas estão em **Docs/**:

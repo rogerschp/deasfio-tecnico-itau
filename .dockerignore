@@ -1,0 +1,54 @@
+# Git
+.git
+.github
+.gitignore
+.gitattributes
+
+# IDE / Editor
+.idea
+.vscode
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+**/bin
+**/obj
+**/out
+**/TestResults
+**/CoverageReport
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet
+**/.nuget
+**/packages
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts
+
+# Docker
+**/Dockerfile*
+**/.dockerignore
+
+# Docs (not needed in image)
+Docs
+*.md
+!README.md
+
+# Tests (not needed in runtime image)
+tests
+
+# Misc
+**/launchSettings.json
+**/*.http
+**/appsettings.Development.json
+**/.vs
+*.log
+.env
+.env.*
+!.env.example

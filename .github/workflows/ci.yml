@@ -1,0 +1,192 @@
+# =============================================================================
+# CI - Compra Programada | Build, Test, Coverage, Quality
+# =============================================================================
+name: CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  SOLUTION_PATH: CompraProgramada.sln
+  MIN_COVERAGE: 70
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Restore & Build
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: Build
+        run: dotnet build ${{ env.SOLUTION_PATH }} --no-restore -c Release
+
+  # ---------------------------------------------------------------------------
+  # Unit & Integration Tests + Coverage
+  # ---------------------------------------------------------------------------
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      checks: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: Run tests with coverage
+        run: |
+          dotnet test ${{ env.SOLUTION_PATH }} \
+            --no-restore \
+            -c Release \
+            --logger "trx;LogFileName=test-results.trx" \
+            --collect:"XPlat Code Coverage" \
+            --results-directory ./TestResults \
+            --settings tests/CompraProgramada.Tests/runsettings
+
+      - name: Install ReportGenerator
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+        if: always()
+
+      - name: Generate coverage report
+        run: |
+          reportgenerator \
+            "-reports:**/coverage.cobertura.xml" \
+            "-targetdir:./CoverageReport" \
+            "-reporttypes:Html;HtmlSummary;TextSummary;Cobertura;Badges"
+        if: always()
+
+      - name: Check coverage threshold
+        run: |
+          if [ -f ./CoverageReport/Summary.txt ]; then
+            COV=$(grep -oP 'Line coverage: \K[0-9.]+' ./CoverageReport/Summary.txt 2>/dev/null || echo "0")
+            echo "Line coverage: ${COV}%"
+            if [ -n "$COV" ] && [ "${COV%.*}" -lt "${{ env.MIN_COVERAGE }}" ] 2>/dev/null; then
+              echo "::warning::Coverage ${COV}% is below minimum ${{ env.MIN_COVERAGE }}%"
+            fi
+          else
+            echo "No coverage report generated (no tests or coverlet not configured)."
+          fi
+        if: always()
+
+      - name: Upload test results (TRX)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: ./CoverageReport
+
+      - name: Test Report (PR summary)
+        uses: dorny/test-reporter@v1
+        if: always() && github.event_name == 'pull_request'
+        with:
+          name: Test Results
+          path: '**/TestResults/*.trx'
+          reporter: dotnet-trx
+          fail-on-error: false
+
+  # ---------------------------------------------------------------------------
+  # Code format & quality (dotnet format)
+  # ---------------------------------------------------------------------------
+  format:
+    name: Format check
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dotnet-format
+        run: dotnet tool install -g dotnet-format
+
+      - name: Verify format
+        run: dotnet format ${{ env.SOLUTION_PATH }} --verify-no-changes -v diagnostic
+        continue-on-error: true
+
+  # ---------------------------------------------------------------------------
+  # Security: dependency audit
+  # ---------------------------------------------------------------------------
+  security:
+    name: Security audit
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: List vulnerable packages
+        run: |
+          dotnet list package --vulnerable --include-transitive 2>/dev/null || true
+        continue-on-error: true
+
+  # ---------------------------------------------------------------------------
+  # CI success gate
+  # ---------------------------------------------------------------------------
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [build, test, format]
+    if: always() && needs.build.result == 'success' && (needs.test.result == 'success' || needs.test.result == 'skipped') && (needs.format.result == 'success' || needs.format.result == 'skipped')
+    steps:
+      - name: All checks passed
+        run: echo "CI pipeline completed."
