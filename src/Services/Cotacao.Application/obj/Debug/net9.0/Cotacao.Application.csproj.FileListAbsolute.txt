@@ -1,0 +1,16 @@
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/bin/Debug/net9.0/Cotacao.Application.deps.json
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/bin/Debug/net9.0/Cotacao.Application.dll
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/bin/Debug/net9.0/Cotacao.Application.pdb
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/bin/Debug/net9.0/Cotacao.Domain.dll
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/bin/Debug/net9.0/Cotacao.Domain.pdb
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao.Application.csproj.AssemblyReference.cache
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao.Application.AssemblyInfoInputs.cache
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao.Application.AssemblyInfo.cs
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao.Application.csproj.CoreCompileInputs.cache
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao.Application.sourcelink.json
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao..803044E9.Up2Date
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao.Application.dll
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/refint/Cotacao.Application.dll
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/Cotacao.Application.pdb
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/Debug/net9.0/ref/Cotacao.Application.dll

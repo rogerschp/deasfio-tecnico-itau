@@ -1,16 +1,40 @@
 {
   "version": 2,
-  "dgSpecHash": "kD0XM62y8yg=",
+  "dgSpecHash": "6BvgJywNrf4=",
   "success": true,
   "projectFilePath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/Cotacao.Service.csproj",
   "expectedPackageFiles": [
-    "/home/rogerschp/.nuget/packages/microsoft.aspnetcore.openapi/9.0.4/microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/swashbuckle.aspnetcore/6.6.2/swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/swashbuckle.aspnetcore.swagger/6.6.2/swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.6.2/swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/swashbuckle.aspnetcore.swaggerui/6.6.2/swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512"
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/dapper/2.1.35/dapper.2.1.35.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.aspnetcore.openapi/9.0.4/microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.entityframeworkcore/9.0.0/microsoft.entityframeworkcore.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.entityframeworkcore.abstractions/9.0.0/microsoft.entityframeworkcore.abstractions.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.entityframeworkcore.analyzers/9.0.0/microsoft.entityframeworkcore.analyzers.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.entityframeworkcore.relational/9.0.0/microsoft.entityframeworkcore.relational.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.caching.abstractions/9.0.0/microsoft.extensions.caching.abstractions.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.caching.memory/9.0.0/microsoft.extensions.caching.memory.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.configuration.abstractions/9.0.0/microsoft.extensions.configuration.abstractions.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.dependencyinjection/9.0.0/microsoft.extensions.dependencyinjection.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.dependencyinjection.abstractions/9.0.0/microsoft.extensions.dependencyinjection.abstractions.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.logging/9.0.0/microsoft.extensions.logging.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.logging.abstractions/9.0.0/microsoft.extensions.logging.abstractions.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.options/9.0.0/microsoft.extensions.options.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.extensions.primitives/9.0.0/microsoft.extensions.primitives.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/mysqlconnector/2.4.0/mysqlconnector.2.4.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/pomelo.entityframeworkcore.mysql/9.0.0/pomelo.entityframeworkcore.mysql.9.0.0.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/swashbuckle.aspnetcore/6.6.2/swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/swashbuckle.aspnetcore.swagger/6.6.2/swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/swashbuckle.aspnetcore.swaggergen/6.6.2/swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/swashbuckle.aspnetcore.swaggerui/6.6.2/swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512",
+    "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget/system.text.encoding.codepages/9.0.0/system.text.encoding.codepages.9.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Error occurred while getting package vulnerability data: Access to the path '/home/rogerschp/.local/share/NuGet/http-cache/670c1461c29885f9aa22c281d8b7da90845b38e4$ps:_api.nuget.org_v3_index.json/vuln_index.dat-new' is denied."
+    }
+  ]
 }

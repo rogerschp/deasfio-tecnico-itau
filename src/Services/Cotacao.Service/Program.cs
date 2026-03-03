@@ -1,41 +1,54 @@
+using Cotacao.Application.Services;
+using Cotacao.Infrastructure;
+using Cotacao.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Cotação Service (COTAHIST B3)",
+        Version = "v1",
+        Description = "API de cotações históricas B3: consulta de fechamento por ticker e importação de arquivo COTAHIST."
+    });
+    options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Program).Assembly.GetName().Name}.xml");
+    if (File.Exists(xmlPath))
+        options.IncludeXmlComments(xmlPath);
+});
+
+builder.Services.AddCotacaoInfrastructure(builder.Configuration);
+builder.Services.AddScoped<ICotacaoAppService, CotacaoAppService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Swagger: habilitado em Development; em outros ambientes use "Swagger:Enabled" = true em config
+var swaggerEnabled = app.Environment.IsDevelopment() ||
+    string.Equals(builder.Configuration["Swagger:Enabled"], "true", StringComparison.OrdinalIgnoreCase);
+if (swaggerEnabled)
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cotação Service v1");
+        c.RoutePrefix = "swagger";
+        c.DocumentTitle = "Cotação Service - COTAHIST B3";
+    });
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 
-var summaries = new[]
+// Aplicar migrations na inicialização (opcional; em produção use job ou script separado)
+using (var scope = app.Services.CreateScope())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    var db = scope.ServiceProvider.GetRequiredService<CotacaoDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
