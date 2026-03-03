@@ -10,7 +10,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/ApiGateway/ApiGateway.csproj",
         "projectName": "ApiGateway",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/ApiGateway/ApiGateway.csproj",
-        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/ApiGateway/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [

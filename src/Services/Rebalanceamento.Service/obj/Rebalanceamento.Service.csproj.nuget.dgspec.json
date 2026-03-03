@@ -10,7 +10,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/Rebalanceamento.Service.csproj",
         "projectName": "Rebalanceamento.Service",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/Rebalanceamento.Service.csproj",
-        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -89,7 +89,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj",
         "projectName": "Shared.Contracts",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj",
-        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -148,7 +148,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj",
         "projectName": "Shared.Kafka",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj",
-        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [

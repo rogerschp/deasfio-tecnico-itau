@@ -46,3 +46,5 @@
 /home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Worker/obj/Debug/net9.0/MotorCompra.Worker.pdb
 /home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Worker/obj/Debug/net9.0/MotorCompra.Worker.genruntimeconfig.cache
 /home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Worker/obj/Debug/net9.0/ref/MotorCompra.Worker.dll
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Worker/bin/Debug/net9.0/Microsoft.Extensions.Http.dll
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Worker/obj/Debug/net9.0/MotorCompra.Worker.sourcelink.json

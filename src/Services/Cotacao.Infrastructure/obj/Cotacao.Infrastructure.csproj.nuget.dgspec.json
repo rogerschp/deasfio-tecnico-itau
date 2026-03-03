@@ -10,7 +10,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj",
         "projectName": "Cotacao.Application",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj",
-        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -73,7 +73,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj",
         "projectName": "Cotacao.Domain",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj",
-        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -132,7 +132,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj",
         "projectName": "Cotacao.Infrastructure",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj",
-        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [

@@ -27,7 +27,7 @@
     ]
   },
   "packageFolders": {
-    "/home/rogerschp/.nuget/packages/": {}
+    "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget": {}
   },
   "project": {
     "version": "1.0.0",
@@ -35,7 +35,7 @@
       "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj",
       "projectName": "Cotacao.Application",
       "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj",
-      "packagesPath": "/home/rogerschp/.nuget/packages/",
+      "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
       "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [

@@ -13,3 +13,4 @@
 /home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/obj/Debug/net9.0/refint/Shared.Kafka.dll
 /home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/obj/Debug/net9.0/Shared.Kafka.pdb
 /home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/obj/Debug/net9.0/ref/Shared.Kafka.dll
+/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/obj/Debug/net9.0/Shared.Kafka.sourcelink.json

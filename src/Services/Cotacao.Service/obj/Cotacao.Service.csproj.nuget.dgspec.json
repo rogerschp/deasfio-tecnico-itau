@@ -10,7 +10,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj",
         "projectName": "Cotacao.Application",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj",
-        "packagesPath": "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -73,7 +73,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj",
         "projectName": "Cotacao.Domain",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj",
-        "packagesPath": "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -132,7 +132,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj",
         "projectName": "Cotacao.Infrastructure",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj",
-        "packagesPath": "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -230,7 +230,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/Cotacao.Service.csproj",
         "projectName": "Cotacao.Service",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/Cotacao.Service.csproj",
-        "packagesPath": "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
@@ -278,6 +278,10 @@
               "target": "Package",
               "version": "[9.0.4, )"
             },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
@@ -312,7 +316,7 @@
         "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj",
         "projectName": "Shared.Contracts",
         "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj",
-        "packagesPath": "/tmp/cursor-sandbox-cache/a2d04b99f0690b2ae1223ec24316e586/nuget",
+        "packagesPath": "/tmp/cursor-sandbox-cache/2300a0faaa61d7bb88eb6d41f935e88f/nuget",
         "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [

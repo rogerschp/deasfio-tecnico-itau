@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MotorCompra.Service")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a6bb37fffb91ef7fa601e3c9d86926f293f36c8")]
 [assembly: System.Reflection.AssemblyProductAttribute("MotorCompra.Service")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MotorCompra.Service")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
