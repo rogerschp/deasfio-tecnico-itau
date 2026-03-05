@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura,opencover</Format>
+          <!-- Exclui Program, Migrations, Designer, Infra, Persistence, Worker, Clients, Options, Shared: meta 70% em Application + Controllers -->
+          <ExcludeByFile>**/Program.cs,**/Migrations/**/*.cs,**/*.Designer.cs,**/obj/**/*,**/bin/**/*,**/Infrastructure/**/*.cs,**/Persistence/**/*.cs,**/Worker.cs,**/Clients/**/*.cs,**/*Options.cs,**/Shared/**/*.cs</ExcludeByFile>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

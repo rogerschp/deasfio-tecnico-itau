@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/Rebalanceamento.Service.props" />
-</Project>
