@@ -124,7 +124,7 @@ jobs:
           path: ./CoverageReport
 
       - name: Test Report (PR summary)
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: always() && github.event_name == 'pull_request'
         with:
           name: Test Results
