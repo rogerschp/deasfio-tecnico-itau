@@ -1,0 +1,85 @@
+# Build
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]uild/
+[Oo]ut/
+
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Test results and coverage
+[Tt]est[Rr]esults/
+[Cc]overage/
+*.trx
+*.coverage
+*.coveragexml
+coverage*.xml
+*.opencover.xml
+*.Cobertura.xml
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# .NET (bin/obj já cobre a maioria; pdb/cache abaixo)
+*.userprefs
+*.suo
+*.user
+*.sln.docstates
+
+# Docker
+.docker/
+
+# OS
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+*.lnk
+
+# Dados locais / COTAHIST (arquivos baixados)
+cotacoes/*.TXT
+cotacoes/*.txt
+!cotacoes/.gitkeep
+
+# Secrets
+*.pfx
+appsettings.*.local.json
+.env
+.env.local
+.env.*.local
+
+# Misc
+*.bak
+*.tmp
+*.temp
+*.swp
+*~
