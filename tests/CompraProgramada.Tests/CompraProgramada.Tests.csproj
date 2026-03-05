@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,15 +13,21 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
     <ProjectReference Include="..\..\src\Shared\Shared.Contracts\Shared.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Services\Admin.Service\Admin.Service.csproj" />
+    <ProjectReference Include="..\..\src\Services\Clientes.Service\Clientes.Service.csproj" />
+    <ProjectReference Include="..\..\src\Services\MotorCompra.Service\MotorCompra.Service.csproj" />
+    <ProjectReference Include="..\..\src\Services\Rebalanceamento.Service\Rebalanceamento.Service.csproj" />
     <ProjectReference Include="..\..\src\Services\Cotacao.Application\Cotacao.Application.csproj" />
     <ProjectReference Include="..\..\src\Services\Cotacao.Domain\Cotacao.Domain.csproj" />
     <ProjectReference Include="..\..\src\Services\Cotacao.Infrastructure\Cotacao.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Services\Cotacao.Service\Cotacao.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>

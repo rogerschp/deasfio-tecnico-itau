@@ -3,29 +3,22 @@ using Cotacao.Application.Contracts;
 using Cotacao.Domain;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
-
 namespace Cotacao.Infrastructure.Persistence;
 
-/// <summary>
-/// Repositório de cotações: usa Dapper/raw SQL para consultas e bulk insert (performance).
-/// </summary>
 public sealed class CotacaoRepository : ICotacaoRepository
 {
     private readonly CotacaoDbContext _context;
     private const int BulkBatchSize = 500;
-
     public CotacaoRepository(CotacaoDbContext context)
     {
         _context = context;
     }
 
-    /// <inheritdoc />
     public async Task<CotacaoB3?> GetFechamentoUltimoPregaoAsync(string ticker, CancellationToken cancellationToken = default)
     {
         var conn = _context.Database.GetDbConnection();
         if (conn.State != ConnectionState.Open)
             await conn.OpenAsync(cancellationToken);
-
         const string sql = """
             SELECT Id, DataPregao, Ticker, PrecoAbertura, PrecoFechamento, PrecoMaximo, PrecoMinimo
             FROM Cotacoes
@@ -33,24 +26,20 @@ public sealed class CotacaoRepository : ICotacaoRepository
             ORDER BY DataPregao DESC
             LIMIT 1
             """;
-
         var cmd = new CommandDefinition(sql, new { Ticker = ticker }, cancellationToken: cancellationToken);
         return await conn.QuerySingleOrDefaultAsync<CotacaoB3>(cmd);
     }
 
-    /// <inheritdoc />
     public async Task<IReadOnlyList<CotacaoB3>> GetFechamentosUltimoPregaoPorTickersAsync(
         IReadOnlyList<string> tickers,
         CancellationToken cancellationToken = default)
     {
         if (tickers.Count == 0)
             return Array.Empty<CotacaoB3>();
-
         var conn = _context.Database.GetDbConnection();
         if (conn.State != ConnectionState.Open)
             await conn.OpenAsync(cancellationToken);
 
-        // Último pregão = MAX(DataPregao). Buscamos cotações desse dia para os tickers solicitados.
         const string sql = """
             SELECT c.Id, c.DataPregao, c.Ticker, c.PrecoAbertura, c.PrecoFechamento, c.PrecoMaximo, c.PrecoMinimo
             FROM Cotacoes c
@@ -62,23 +51,22 @@ public sealed class CotacaoRepository : ICotacaoRepository
             ) last ON c.Ticker = last.Ticker AND c.DataPregao = last.DataPregao
             WHERE c.Ticker IN @Tickers
             """;
-
         var cmd = new CommandDefinition(sql, new { Tickers = tickers }, cancellationToken: cancellationToken);
         var list = await conn.QueryAsync<CotacaoB3>(cmd);
-        return list.ToList();
+        var result = new List<CotacaoB3>();
+        foreach (var row in list)
+            result.Add(row);
+        return result;
     }
 
-    /// <inheritdoc />
-    public async Task<int> BulkInsertAsync(IEnumerable<CotacaoB3> cotacoes, CancellationToken cancellationToken = default)
+    public async Task<int> BulkInsertAsync(IEnumerable<CotacaoB3> quotes, CancellationToken cancellationToken = default)
     {
-        var list = cotacoes.ToList();
+        var list = quotes.ToList();
         if (list.Count == 0)
             return 0;
-
         var conn = _context.Database.GetDbConnection();
         if (conn.State != ConnectionState.Open)
             await conn.OpenAsync(cancellationToken);
-
         var total = 0;
         await using var transaction = await conn.BeginTransactionAsync(cancellationToken);
         try
@@ -90,7 +78,6 @@ public sealed class CotacaoRepository : ICotacaoRepository
                     new CommandDefinition(sql, param, transaction, cancellationToken: cancellationToken));
                 total += batch.Length;
             }
-
             await transaction.CommitAsync(cancellationToken);
         }
         catch
@@ -98,10 +85,8 @@ public sealed class CotacaoRepository : ICotacaoRepository
             await transaction.RollbackAsync(cancellationToken);
             throw;
         }
-
         return total;
     }
-
     private static (string Sql, object Param) BuildBulkInsert(CotacaoB3[] batch)
     {
         var values = new List<string>(batch.Length);
@@ -118,7 +103,6 @@ public sealed class CotacaoRepository : ICotacaoRepository
             param.Add(prefix + "pmx", p.PrecoMaximo);
             param.Add(prefix + "pmn", p.PrecoMinimo);
         }
-
         var sql = """
             INSERT INTO Cotacoes (DataPregao, Ticker, PrecoAbertura, PrecoFechamento, PrecoMaximo, PrecoMinimo)
             VALUES
@@ -126,15 +110,13 @@ public sealed class CotacaoRepository : ICotacaoRepository
         return (sql, param);
     }
 
-    /// <inheritdoc />
-    public async Task<bool> ExistePregaoAsync(DateOnly dataPregao, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistePregaoAsync(DateOnly tradingDate, CancellationToken cancellationToken = default)
     {
         var conn = _context.Database.GetDbConnection();
         if (conn.State != ConnectionState.Open)
             await conn.OpenAsync(cancellationToken);
-
         const string sql = "SELECT 1 FROM Cotacoes WHERE DataPregao = @DataPregao LIMIT 1";
-        var cmd = new CommandDefinition(sql, new { DataPregao = dataPregao }, cancellationToken: cancellationToken);
+        var cmd = new CommandDefinition(sql, new { DataPregao = tradingDate }, cancellationToken: cancellationToken);
         return await conn.ExecuteScalarAsync<int?>(cmd) is 1;
     }
 }

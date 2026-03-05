@@ -2,30 +2,25 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using MotorCompra.Service.Application.Entities;
 using MotorCompra.Service.Application.Ports;
-
 namespace MotorCompra.Service.Infrastructure.Persistence;
-
 public class ExecucaoCompraRepository : IExecucaoCompraRepository
 {
     private readonly MotorDbContext _db;
-
     public ExecucaoCompraRepository(MotorDbContext db) => _db = db;
-
-    public async Task<bool> JaExecutouNaDataAsync(DateOnly dataReferencia, CancellationToken ct = default)
+    public async Task<bool> JaExecutouNaDataAsync(DateOnly referenceDate, CancellationToken ct = default)
     {
-        return await _db.ExecucoesCompra.AnyAsync(e => e.DataReferencia == dataReferencia, ct);
+        return await _db.ExecucoesCompra.AnyAsync(e => e.DataReferencia == referenceDate, ct);
     }
-
-    public async Task<ExecucaoCompra> SalvarExecucaoAsync(ExecucaoCompra execucao, CancellationToken ct = default)
+    public async Task<ExecucaoCompra> SalvarExecucaoAsync(ExecucaoCompra execution, CancellationToken ct = default)
     {
         var entity = new ExecucaoCompraEntity
         {
-            DataReferencia = execucao.DataReferencia,
-            DataExecucao = execucao.DataExecucao,
-            TotalConsolidado = execucao.TotalConsolidado,
-            TotalClientes = execucao.TotalClientes
+            DataReferencia = execution.DataReferencia,
+            DataExecucao = execution.DataExecucao,
+            TotalConsolidado = execution.TotalConsolidado,
+            TotalClientes = execution.TotalClientes
         };
-        foreach (var o in execucao.Ordens)
+        foreach (var o in execution.Ordens)
         {
             entity.Ordens.Add(new OrdemCompraEntity
             {
@@ -36,7 +31,7 @@ public class ExecucaoCompraRepository : IExecucaoCompraRepository
                 DetalhesJson = JsonSerializer.Serialize(o.Detalhes)
             });
         }
-        foreach (var d in execucao.Distribuicoes)
+        foreach (var d in execution.Distribuicoes)
         {
             entity.Distribuicoes.Add(new DistribuicaoEntity
             {
@@ -49,7 +44,7 @@ public class ExecucaoCompraRepository : IExecucaoCompraRepository
         }
         _db.ExecucoesCompra.Add(entity);
         await _db.SaveChangesAsync(ct);
-        execucao.Id = entity.Id;
-        return execucao;
+        execution.Id = entity.Id;
+        return execution;
     }
 }

@@ -1,7 +1,5 @@
 using Cotacao.Application.DTOs;
-
 namespace CompraProgramada.Tests.Cotacao;
-
 public class CotacaoDtoTests
 {
     [Fact]
@@ -12,7 +10,6 @@ public class CotacaoDtoTests
         Assert.Equal(new DateOnly(2026, 2, 25), dto.DataPregao);
         Assert.Equal(35.80m, dto.PrecoFechamento);
     }
-
     [Fact]
     public void ImportacaoResultDto_Deve_Refletir_Resultado_Da_Importacao()
     {
@@ -21,7 +18,6 @@ public class CotacaoDtoTests
         Assert.Equal(1500, dto.RegistrosInseridos);
         Assert.False(dto.PregaoJaExistia);
     }
-
     [Fact]
     public void ImportacaoResultDto_PregaoJaExistia_Retorna_Zero_Inseridos()
     {

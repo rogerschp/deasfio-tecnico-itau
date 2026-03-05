@@ -1,22 +1,18 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.Options;
-
 namespace MotorCompra.Worker;
-
 public class Worker : BackgroundService
 {
     public const string HttpClientName = "MotorCompra";
     private readonly ILogger<Worker> _logger;
     private readonly IHttpClientFactory _httpFactory;
     private readonly WorkerOptions _options;
-
     public Worker(ILogger<Worker> logger, IHttpClientFactory httpFactory, IOptions<WorkerOptions> options)
     {
         _logger = logger;
         _httpFactory = httpFactory;
         _options = options.Value;
     }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Motor de Compra Worker iniciado. Verificando datas de execução (dias 5, 15 e 25).");
@@ -48,12 +44,10 @@ public class Worker : BackgroundService
             {
                 _logger.LogError(ex, "Erro ao verificar ou executar compra programada.");
             }
-
             await Task.Delay(TimeSpan.FromMinutes(_options.IntervaloMinutos), stoppingToken);
         }
     }
 }
-
 public class WorkerOptions
 {
     public const string SectionName = "MotorCompraWorker";

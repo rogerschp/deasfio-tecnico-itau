@@ -1,35 +1,25 @@
 using System.Text;
 using Cotacao.Domain;
 using Cotacao.Infrastructure.Parser;
-
 namespace CompraProgramada.Tests.Cotacao;
 
-// Encoding ISO-8859-1 para igualar ao parser (arquivo COTAHIST).
 file static class CotahistEncoding
 {
     static CotahistEncoding()
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
     }
-
     public static Encoding Instance => Encoding.GetEncoding("ISO-8859-1");
 }
-
 public class CotahistParserTests
 {
-    /// <summary>
-    /// Linha de detalhe válida COTAHIST (245 caracteres): 01, 20260225, 02, PETR4 (12 chars), 010, depois preços etc.
-    /// PREABE=35,20 PREMAX=36,50 PREMIN=34,80 PREULT=35,80 (posições conforme layout B3).
-    /// </summary>
-    private static readonly string LinhaDetalheValida = BuildLinhaCotahistValida();
 
+    private static readonly string LinhaDetalheValida = BuildLinhaCotahistValida();
     private static string BuildLinhaCotahistValida()
     {
-        // 01 + 20260225 + 02 + PETR4(12) + 010 + resto do layout (preços etc.) = 245 chars.
         const string baseDoc = "01202602250200PETR4       010PETROBRAS   PN      N1   R$  0000000003520000000003650000000003480000000003560000000003580000000003570000000003590034561000000000150000000000000005376000000000000000000000000000000000000000BRPETRACNPR6180";
         return (baseDoc.Substring(0, 12) + "PETR4       " + "010" + baseDoc.Substring(27)).PadRight(245);
     }
-
     [Fact]
     public void LinhaConstruida_DeveTerCamposCorretosNasPosicoesEsperadas()
     {
@@ -40,7 +30,6 @@ public class CotahistParserTests
         Assert.Equal("PETR4", LinhaDetalheValida.AsSpan(12, 12).Trim().ToString());
         Assert.Equal("010", LinhaDetalheValida.AsSpan(24, 3).ToString());
     }
-
     [Fact(Skip = "Teste de integração: requer arquivo COTAHIST; validar manualmente com arquivo real na pasta cotacoes/")]
     public async Task ParseFromFileAsync_ArquivoComUmaLinhaValida_RetornaUmaCotacao()
     {
@@ -48,13 +37,11 @@ public class CotahistParserTests
         var tempFile = Path.GetTempFileName();
         try
         {
-            _ = CotahistEncoding.Instance; // garantir registro do encoding
+            _ = CotahistEncoding.Instance;
             await File.WriteAllTextAsync(tempFile, LinhaDetalheValida + Environment.NewLine, CotahistEncoding.Instance);
-
             var list = new List<CotacaoB3>();
             await foreach (var c in parser.ParseFromFileAsync(tempFile))
                 list.Add(c);
-
             Assert.Single(list);
             var c1 = list[0];
             Assert.Equal("PETR4", c1.Ticker);
@@ -70,7 +57,6 @@ public class CotahistParserTests
                 File.Delete(tempFile);
         }
     }
-
     [Fact(Skip = "Teste de integração: requer arquivo COTAHIST; validar manualmente com arquivo real.")]
     public async Task ParseFromFileAsync_IgnoraHeader00_RetornaApenasDetalhes()
     {
@@ -82,11 +68,9 @@ public class CotahistParserTests
             var content = header.PadRight(245) + Environment.NewLine + LinhaDetalheValida + Environment.NewLine;
             _ = CotahistEncoding.Instance;
             await File.WriteAllTextAsync(tempFile, content, CotahistEncoding.Instance);
-
             var list = new List<CotacaoB3>();
             await foreach (var c in parser.ParseFromFileAsync(tempFile))
                 list.Add(c);
-
             Assert.Single(list);
             Assert.Equal("PETR4", list[0].Ticker);
         }
@@ -96,7 +80,6 @@ public class CotahistParserTests
                 File.Delete(tempFile);
         }
     }
-
     [Fact(Skip = "Teste de integração: requer arquivo COTAHIST; validar manualmente com arquivo real.")]
     public async Task ParseFromFileAsync_IgnoraTrailer99_RetornaApenasDetalhes()
     {
@@ -108,11 +91,9 @@ public class CotahistParserTests
             var content = LinhaDetalheValida + Environment.NewLine + trailer + Environment.NewLine;
             _ = CotahistEncoding.Instance;
             await File.WriteAllTextAsync(tempFile, content, CotahistEncoding.Instance);
-
             var list = new List<CotacaoB3>();
             await foreach (var c in parser.ParseFromFileAsync(tempFile))
                 list.Add(c);
-
             Assert.Single(list);
         }
         finally
@@ -121,7 +102,6 @@ public class CotahistParserTests
                 File.Delete(tempFile);
         }
     }
-
     [Fact]
     public async Task ParseFromFileAsync_ArquivoVazio_RetornaNenhumaCotacao()
     {
@@ -130,11 +110,9 @@ public class CotahistParserTests
         try
         {
             await File.WriteAllTextAsync(tempFile, "");
-
             var count = 0;
             await foreach (var _ in parser.ParseFromFileAsync(tempFile))
                 count++;
-
             Assert.Equal(0, count);
         }
         finally

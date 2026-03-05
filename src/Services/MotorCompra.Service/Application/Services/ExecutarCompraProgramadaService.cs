@@ -1,18 +1,16 @@
+using Microsoft.Extensions.Logging;
 using MotorCompra.Service.Application.Entities;
+using MotorCompra.Service.Application.Exceptions;
 using MotorCompra.Service.Application.Ports;
 using Shared.Kafka;
 using Shared.Contracts.Eventos;
-
 namespace MotorCompra.Service.Application.Services;
 
-/// <summary>
-/// Orquestra o fluxo do motor de compra programada (RN-020 a RN-040, Docs/regras-negocio-detalhadas.md).
-/// </summary>
 public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
 {
+    private const int TamanhoLotePadraoB3 = 100;
     private const decimal UmTerco = 1m / 3m;
-    private const decimal AliquotaIrDedoDuro = 0.00005m; // 0,005%
-
+    private const decimal AliquotaIrDedoDuro = 0.00005m;
     private readonly ICestaVigenteClient _cestaClient;
     private readonly IClientesAtivosClient _clientesClient;
     private readonly ICotacaoFechamentoClient _cotacaoClient;
@@ -20,7 +18,7 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
     private readonly IExecucaoCompraRepository _execucaoRepo;
     private readonly ICustodiaMasterRepository _custodiaRepo;
     private readonly IEventoIRPublisher _kafka;
-
+    private readonly ILogger<ExecutarCompraProgramadaService> _logger;
     public ExecutarCompraProgramadaService(
         ICestaVigenteClient cestaClient,
         IClientesAtivosClient clientesClient,
@@ -28,7 +26,8 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
         IRegistroDistribuicaoClient registroDistribuicaoClient,
         IExecucaoCompraRepository execucaoRepo,
         ICustodiaMasterRepository custodiaRepo,
-        IEventoIRPublisher kafka)
+        IEventoIRPublisher kafka,
+        ILogger<ExecutarCompraProgramadaService> logger)
     {
         _cestaClient = cestaClient;
         _clientesClient = clientesClient;
@@ -37,159 +36,194 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
         _execucaoRepo = execucaoRepo;
         _custodiaRepo = custodiaRepo;
         _kafka = kafka;
+        _logger = logger;
     }
-
-    public async Task<ExecucaoCompra?> ExecutarAsync(DateOnly dataReferencia, CancellationToken ct = default)
+    public async Task<ExecucaoCompra?> ExecutarAsync(DateOnly referenceDate, CancellationToken ct = default)
     {
-        if (await _execucaoRepo.JaExecutouNaDataAsync(dataReferencia, ct))
-            return null;
-
-        var cesta = await _cestaClient.GetCestaVigenteAsync(ct);
-        if (cesta?.Itens == null || cesta.Itens.Count == 0)
-            return null;
-
-        var clientes = await _clientesClient.GetClientesAtivosAsync(ct);
-        if (clientes.Count == 0)
-            return null;
-
-        var tickers = cesta.Itens.Select(i => i.Ticker).Distinct().ToList();
-        var cotacoes = await _cotacaoClient.GetFechamentosAsync(tickers, ct);
-        if (cotacoes.Count == 0)
-            return null;
-
-        var precoPorTicker = cotacoes.ToDictionary(c => c.Ticker, c => c.PrecoFechamento);
-        foreach (var t in tickers)
-            if (!precoPorTicker.ContainsKey(t))
-                return null;
-
-        // 1) Agrupamento: 1/3 do valor mensal por cliente (RN-025, RN-026)
-        var aportes = clientes.Select(c => (c.ClienteId, c.Nome, c.Cpf, c.ContaGraficaId, ValorData: c.ValorMensal * UmTerco)).ToList();
-        var totalConsolidado = aportes.Sum(a => a.ValorData);
-        if (totalConsolidado <= 0)
-            return null;
-
-        // 2) Valor por ativo segundo percentual da cesta
-        var valorPorTicker = cesta.Itens.ToDictionary(i => i.Ticker, i => totalConsolidado * (i.Percentual / 100m));
-
-        // 3) Saldo custódia master e quantidade a comprar (RN-028, RN-029, RN-030)
-        var saldosMaster = await _custodiaRepo.GetSaldosPorTickerAsync(tickers, ct);
-        var quantidadeAComprar = new Dictionary<string, int>();
-        foreach (var item in cesta.Itens)
+        if (await _execucaoRepo.JaExecutouNaDataAsync(referenceDate, ct))
+            throw new CompraJaExecutadaException(referenceDate);
+        var basket = await _cestaClient.GetCestaVigenteAsync(ct);
+        if (basket?.Itens == null || basket.Itens.Count == 0)
         {
-            var valor = valorPorTicker[item.Ticker];
-            var preco = precoPorTicker[item.Ticker];
-            var qtdSemSaldo = preco > 0 ? (int)Math.Floor(valor / preco) : 0;
-            var saldo = saldosMaster.GetValueOrDefault(item.Ticker, 0);
-            quantidadeAComprar[item.Ticker] = Math.Max(0, qtdSemSaldo - saldo);
+            _logger.LogWarning("Motor 204: Nenhuma cesta vigente. Cadastre uma cesta via POST /api/admin/cesta.");
+            return null;
+        }
+        var customers = await _clientesClient.GetClientesAtivosAsync(ct);
+        if (customers.Count == 0)
+        {
+            _logger.LogWarning("Motor 204: Nenhum cliente ativo. Faça uma adesão via POST /api/clientes/adesao.");
+            return null;
+        }
+        var tickerSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < basket.Itens.Count; i++)
+            tickerSet.Add(basket.Itens[i].Ticker);
+        var tickers = new List<string>(tickerSet);
+        var quotes = await _cotacaoClient.GetFechamentosAsync(tickers, ct);
+        if (quotes.Count == 0)
+        {
+            _logger.LogWarning("Motor 204: Nenhuma cotação de fechamento para os tickers da cesta ({Tickers}). Importe um COTAHIST via POST /api/cotacoes/importar.", string.Join(", ", tickers));
+            return null;
+        }
+        var priceByTicker = new Dictionary<string, decimal>(quotes.Count, StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < quotes.Count; i++)
+        {
+            var c = quotes[i];
+            priceByTicker[c.Ticker] = c.PrecoFechamento;
+        }
+        for (var i = 0; i < tickers.Count; i++)
+        {
+            var t = tickers[i];
+            if (!priceByTicker.ContainsKey(t))
+            {
+                _logger.LogWarning("Motor 204: Cotação de fechamento não encontrada para o ticker {Ticker}. Verifique se o COTAHIST importado contém esse ativo.", t);
+                return null;
+            }
         }
 
-        // 4) Detalhes lote padrão + fracionário (RN-031, RN-032, RN-033)
-        var ordens = new List<OrdemCompraItem>();
-        var compradoPorTicker = new Dictionary<string, int>();
-        foreach (var item in cesta.Itens)
+        var contributions = new List<(long ClienteId, string Nome, string Cpf, long ContaGraficaId, decimal ValorData)>(customers.Count);
+        decimal totalConsolidated = 0;
+        for (var i = 0; i < customers.Count; i++)
         {
-            var qtd = quantidadeAComprar.GetValueOrDefault(item.Ticker, 0);
-            var preco = precoPorTicker[item.Ticker];
-            var (lotePadrao, fracionario) = SepararLoteFracionario(qtd);
-            var detalhes = new List<DetalheOrdemDto>();
-            if (lotePadrao > 0)
-                detalhes.Add(new DetalheOrdemDto("LOTE_PADRAO", item.Ticker, lotePadrao));
-            if (fracionario > 0)
-                detalhes.Add(new DetalheOrdemDto("FRACIONARIO", item.Ticker + "F", fracionario));
-            var totalQtd = lotePadrao + fracionario;
-            ordens.Add(new OrdemCompraItem
+            var c = customers[i];
+            var valorData = c.ValorMensal * UmTerco;
+            contributions.Add((c.ClienteId, c.Nome, c.Cpf, c.ContaGraficaId, valorData));
+            totalConsolidated += valorData;
+        }
+        if (totalConsolidated <= 0)
+        {
+            _logger.LogWarning("Motor 204: Total consolidado de aportes é zero (valor mensal dos clientes pode ser zero).");
+            return null;
+        }
+
+        var valueByTicker = new Dictionary<string, decimal>(basket.Itens.Count, StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < basket.Itens.Count; i++)
+        {
+            var item = basket.Itens[i];
+            valueByTicker[item.Ticker] = totalConsolidated * (item.Percentual / 100m);
+        }
+
+        var masterBalances = await _custodiaRepo.GetSaldosPorTickerAsync(tickers, ct);
+        var quantityToBuy = new Dictionary<string, int>();
+        foreach (var item in basket.Itens)
+        {
+            var amount = valueByTicker[item.Ticker];
+            var price = priceByTicker[item.Ticker];
+            var qtyWithoutBalance = price > 0 ? (int)Math.Floor(amount / price) : 0;
+            var balance = masterBalances.GetValueOrDefault(item.Ticker, 0);
+            quantityToBuy[item.Ticker] = Math.Max(0, qtyWithoutBalance - balance);
+        }
+
+        var orders = new List<OrdemCompraItem>();
+        var boughtByTicker = new Dictionary<string, int>();
+        foreach (var item in basket.Itens)
+        {
+            var qty = quantityToBuy.GetValueOrDefault(item.Ticker, 0);
+            var price = priceByTicker[item.Ticker];
+            var (standardLot, fractional) = SepararLoteFracionario(qty);
+            var details = new List<DetalheOrdemDto>();
+            if (standardLot > 0)
+                details.Add(new DetalheOrdemDto("LOTE_PADRAO", item.Ticker, standardLot));
+            if (fractional > 0)
+                details.Add(new DetalheOrdemDto("FRACIONARIO", item.Ticker + "F", fractional));
+            var totalQty = standardLot + fractional;
+            orders.Add(new OrdemCompraItem
             {
                 Ticker = item.Ticker,
-                QuantidadeTotal = totalQtd,
-                PrecoUnitario = preco,
-                ValorTotal = totalQtd * preco,
-                Detalhes = detalhes
+                QuantidadeTotal = totalQty,
+                PrecoUnitario = price,
+                ValorTotal = totalQty * price,
+                Detalhes = details
             });
-            compradoPorTicker[item.Ticker] = totalQtd;
+            boughtByTicker[item.Ticker] = totalQty;
         }
 
-        // 5) Disponível por ticker = saldo master + comprado
-        var disponivelPorTicker = new Dictionary<string, int>();
+        var availableByTicker = new Dictionary<string, int>();
         foreach (var t in tickers)
-            disponivelPorTicker[t] = saldosMaster.GetValueOrDefault(t, 0) + compradoPorTicker.GetValueOrDefault(t, 0);
+            availableByTicker[t] = masterBalances.GetValueOrDefault(t, 0) + boughtByTicker.GetValueOrDefault(t, 0);
 
-        // 6) Distribuição proporcional (RN-034 a RN-036): por cliente, TRUNCAR(proporção × disponível)
-        var distribuicoes = new List<DistribuicaoCliente>();
-        foreach (var (clienteId, nome, cpf, _, valorAporte) in aportes)
+        var distributions = new List<DistribuicaoCliente>();
+        foreach (var (customerId, name, cpf, _, contributionAmount) in contributions)
         {
-            var proporcao = totalConsolidado > 0 ? valorAporte / totalConsolidado : 0;
-            var ativos = new List<AtivoDistribuidoDto>();
-            foreach (var item in cesta.Itens)
+            var proportion = totalConsolidated > 0 ? contributionAmount / totalConsolidated : 0;
+            var assets = new List<AtivoDistribuidoDto>();
+            foreach (var item in basket.Itens)
             {
-                var disp = disponivelPorTicker.GetValueOrDefault(item.Ticker, 0);
-                var qtdCliente = (int)Math.Floor(disp * proporcao);
-                if (qtdCliente > 0)
+                var available = availableByTicker.GetValueOrDefault(item.Ticker, 0);
+                var customerQty = (int)Math.Floor(available * proportion);
+                if (customerQty > 0)
                 {
-                    ativos.Add(new AtivoDistribuidoDto(item.Ticker, qtdCliente));
-                    disponivelPorTicker[item.Ticker] = disp - qtdCliente;
+                    assets.Add(new AtivoDistribuidoDto(item.Ticker, customerQty));
+                    availableByTicker[item.Ticker] = available - customerQty;
                 }
             }
-            distribuicoes.Add(new DistribuicaoCliente
+            distributions.Add(new DistribuicaoCliente
             {
-                ClienteId = clienteId,
-                Nome = nome,
+                ClienteId = customerId,
+                Nome = name,
                 Cpf = cpf,
-                ValorAporte = valorAporte,
-                Ativos = ativos
+                ValorAporte = contributionAmount,
+                Ativos = assets
             });
         }
 
-        // 7) Persistir execução
-        var execucao = new ExecucaoCompra
+        var execution = new ExecucaoCompra
         {
-            DataReferencia = dataReferencia,
+            DataReferencia = referenceDate,
             DataExecucao = DateTime.UtcNow,
-            TotalConsolidado = totalConsolidado,
-            TotalClientes = clientes.Count,
-            Ordens = ordens,
-            Distribuicoes = distribuicoes
+            TotalConsolidado = totalConsolidated,
+            TotalClientes = customers.Count,
+            Ordens = orders,
+            Distribuicoes = distributions
         };
-        await _execucaoRepo.SalvarExecucaoAsync(execucao, ct);
+        await _execucaoRepo.SalvarExecucaoAsync(execution, ct);
 
-        // 8) Atualizar custódia master com resíduos (o que sobrou após distribuição por ticker)
-        var residuos = tickers.Select(t => (t, disponivelPorTicker.GetValueOrDefault(t, 0))).ToList();
-        await _custodiaRepo.DefinirResiduosAsync(residuos, ct);
+        var residuals = new List<(string Ticker, int Quantidade)>(tickers.Count);
+        for (var i = 0; i < tickers.Count; i++)
+            residuals.Add((tickers[i], availableByTicker.GetValueOrDefault(tickers[i], 0)));
+        await _custodiaRepo.DefinirResiduosAsync(residuals, ct);
 
-        // 9) Registrar distribuição no serviço de Clientes (custódia filhote) e publicar IR dedo-duro
-        foreach (var dist in distribuicoes)
+        var installment = referenceDate.Day switch { 5 => 1, 15 => 2, 25 => 3, _ => (int?)null };
+        foreach (var dist in distributions)
         {
-            var itensComPreco = dist.Ativos
-                .Select(a => new ItemDistribuicaoDto(a.Ticker, a.Quantidade, precoPorTicker[a.Ticker]))
-                .ToList();
-            await _registroDistribuicaoClient.RegistrarDistribuicaoAsync(clienteId: dist.ClienteId, execucao.Id, itensComPreco, ct);
-
-            foreach (var at in dist.Ativos)
+            var itemsWithPrice = new List<ItemDistribuicaoDto>(dist.Ativos.Count);
+            for (var i = 0; i < dist.Ativos.Count; i++)
             {
-                var valorOp = at.Quantidade * precoPorTicker[at.Ticker];
-                var valorIr = Math.Round(valorOp * AliquotaIrDedoDuro, 2);
-                await _kafka.PublicarDedoDuroAsync(new EventoIRDedoDuro(
-                    Tipo: "IR_DEDO_DURO",
-                    ClienteId: dist.ClienteId,
-                    Cpf: dist.Cpf,
-                    Ticker: at.Ticker,
-                    TipoOperacao: "COMPRA",
-                    Quantidade: at.Quantidade,
-                    PrecoUnitario: precoPorTicker[at.Ticker],
-                    ValorOperacao: valorOp,
-                    Aliquota: AliquotaIrDedoDuro,
-                    ValorIR: valorIr,
-                    DataOperacao: execucao.DataExecucao
-                ), ct);
+                var a = dist.Ativos[i];
+                itemsWithPrice.Add(new ItemDistribuicaoDto(a.Ticker, a.Quantidade, priceByTicker[a.Ticker]));
+            }
+            await _registroDistribuicaoClient.RegistrarDistribuicaoAsync(dist.ClienteId, execution.Id, itemsWithPrice, referenceDate, dist.ValorAporte, installment, ct);
+            foreach (var asset in dist.Ativos)
+            {
+                var operationAmount = asset.Quantidade * priceByTicker[asset.Ticker];
+                var irAmount = Math.Round(operationAmount * AliquotaIrDedoDuro, 2);
+                try
+                {
+                    await _kafka.PublicarDedoDuroAsync(new EventoIRDedoDuro(
+                        Tipo: "IR_DEDO_DURO",
+                        ClienteId: dist.ClienteId,
+                        Cpf: dist.Cpf,
+                        Ticker: asset.Ticker,
+                        TipoOperacao: "COMPRA",
+                        Quantidade: asset.Quantidade,
+                        PrecoUnitario: priceByTicker[asset.Ticker],
+                        ValorOperacao: operationAmount,
+                        Aliquota: AliquotaIrDedoDuro,
+                        ValorIR: irAmount,
+                        DataOperacao: execution.DataExecucao
+                    ), ct);
+                }
+                catch (Exception ex)
+                {
+                    throw new KafkaIndisponivelException("Falha ao publicar IR dedo-duro no Kafka.", ex);
+                }
             }
         }
-
-        return execucao;
+        return execution;
     }
-
-    private static (int LotePadrao, int Fracionario) SepararLoteFracionario(int quantidade)
+    private static (int LotePadrao, int Fracionario) SepararLoteFracionario(int quantity)
     {
-        var lotes = quantidade / 100;
-        var frac = quantidade % 100;
-        return (lotes * 100, frac);
+        var lots = quantity / TamanhoLotePadraoB3;
+        var fractionalPart = quantity % TamanhoLotePadraoB3;
+        return (lots * TamanhoLotePadraoB3, fractionalPart);
     }
 }

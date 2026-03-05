@@ -1,16 +1,12 @@
 using Microsoft.EntityFrameworkCore.Migrations;
-
 #nullable disable
-
 namespace MotorCompra.Service.Infrastructure.Persistence.Migrations;
-
 public partial class InitialMotor : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.AlterDatabase()
             .Annotation("MySql:CharSet", "utf8mb4");
-
         migrationBuilder.CreateTable(
             name: "ExecucoesCompra",
             columns: table => new
@@ -24,13 +20,11 @@ public partial class InitialMotor : Migration
             constraints: table => table.PrimaryKey("PK_ExecucoesCompra", x => x.Id))
             .Annotation("MySql:CharSet", "utf8mb4");
         migrationBuilder.Sql("ALTER TABLE `ExecucoesCompra` MODIFY COLUMN `Id` bigint NOT NULL AUTO_INCREMENT;");
-
         migrationBuilder.CreateIndex(
             name: "IX_ExecucoesCompra_DataReferencia",
             table: "ExecucoesCompra",
             column: "DataReferencia",
             unique: true);
-
         migrationBuilder.CreateTable(
             name: "CustodiaMaster",
             columns: table => new
@@ -43,13 +37,11 @@ public partial class InitialMotor : Migration
             constraints: table => table.PrimaryKey("PK_CustodiaMaster", x => x.Id))
             .Annotation("MySql:CharSet", "utf8mb4");
         migrationBuilder.Sql("ALTER TABLE `CustodiaMaster` MODIFY COLUMN `Id` bigint NOT NULL AUTO_INCREMENT;");
-
         migrationBuilder.CreateIndex(
             name: "IX_CustodiaMaster_Ticker",
             table: "CustodiaMaster",
             column: "Ticker",
             unique: true);
-
         migrationBuilder.CreateTable(
             name: "OrdensCompra",
             columns: table => new
@@ -76,12 +68,10 @@ public partial class InitialMotor : Migration
             })
             .Annotation("MySql:CharSet", "utf8mb4");
         migrationBuilder.Sql("ALTER TABLE `OrdensCompra` MODIFY COLUMN `Id` bigint NOT NULL AUTO_INCREMENT;");
-
         migrationBuilder.CreateIndex(
             name: "IX_OrdensCompra_ExecucaoCompraId",
             table: "OrdensCompra",
             column: "ExecucaoCompraId");
-
         migrationBuilder.CreateTable(
             name: "Distribuicoes",
             columns: table => new
@@ -109,13 +99,11 @@ public partial class InitialMotor : Migration
             })
             .Annotation("MySql:CharSet", "utf8mb4");
         migrationBuilder.Sql("ALTER TABLE `Distribuicoes` MODIFY COLUMN `Id` bigint NOT NULL AUTO_INCREMENT;");
-
         migrationBuilder.CreateIndex(
             name: "IX_Distribuicoes_ExecucaoCompraId",
             table: "Distribuicoes",
             column: "ExecucaoCompraId");
     }
-
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.DropTable(name: "CustodiaMaster");

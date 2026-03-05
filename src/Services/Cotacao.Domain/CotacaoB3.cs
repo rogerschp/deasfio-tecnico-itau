@@ -1,9 +1,5 @@
 namespace Cotacao.Domain;
 
-/// <summary>
-/// Entidade de cotação histórica B3 (COTAHIST).
-/// Representa um registro de pregao por ativo (DataPregao + Ticker únicos).
-/// </summary>
 public class CotacaoB3
 {
     public long Id { get; set; }

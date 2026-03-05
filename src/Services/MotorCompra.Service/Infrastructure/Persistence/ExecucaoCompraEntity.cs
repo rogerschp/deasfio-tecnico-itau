@@ -1,5 +1,4 @@
 namespace MotorCompra.Service.Infrastructure.Persistence;
-
 public class ExecucaoCompraEntity
 {
     public long Id { get; set; }
@@ -10,7 +9,6 @@ public class ExecucaoCompraEntity
     public ICollection<OrdemCompraEntity> Ordens { get; set; } = new List<OrdemCompraEntity>();
     public ICollection<DistribuicaoEntity> Distribuicoes { get; set; } = new List<DistribuicaoEntity>();
 }
-
 public class OrdemCompraEntity
 {
     public long Id { get; set; }
@@ -20,9 +18,8 @@ public class OrdemCompraEntity
     public int QuantidadeTotal { get; set; }
     public decimal PrecoUnitario { get; set; }
     public decimal ValorTotal { get; set; }
-    public string DetalhesJson { get; set; } = "[]"; // [{ "tipo": "FRACIONARIO", "ticker": "PETR4F", "quantidade": 28 }]
+    public string DetalhesJson { get; set; } = "[]";
 }
-
 public class DistribuicaoEntity
 {
     public long Id { get; set; }
@@ -32,5 +29,5 @@ public class DistribuicaoEntity
     public string Nome { get; set; } = string.Empty;
     public string Cpf { get; set; } = string.Empty;
     public decimal ValorAporte { get; set; }
-    public string AtivosJson { get; set; } = "[]"; // [{ "ticker": "PETR4", "quantidade": 8 }]
+    public string AtivosJson { get; set; } = "[]";
 }

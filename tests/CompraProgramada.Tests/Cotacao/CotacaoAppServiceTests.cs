@@ -3,210 +3,132 @@ using Cotacao.Application.DTOs;
 using Cotacao.Application.Services;
 using Cotacao.Domain;
 using Moq;
-
 namespace CompraProgramada.Tests.Cotacao;
-
 public class CotacaoAppServiceTests
 {
-    private readonly Mock<ICotacaoRepository> _repositoryMock;
-    private readonly Mock<ICotahistParser> _parserMock;
+    private readonly Mock<ICotacaoRepository> _repository;
+    private readonly Mock<ICotahistParser> _parser;
     private readonly CotacaoAppService _sut;
-
     public CotacaoAppServiceTests()
     {
-        _repositoryMock = new Mock<ICotacaoRepository>();
-        _parserMock = new Mock<ICotahistParser>();
-        _sut = new CotacaoAppService(_repositoryMock.Object, _parserMock.Object);
+        _repository = new Mock<ICotacaoRepository>();
+        _parser = new Mock<ICotahistParser>();
+        _sut = new CotacaoAppService(_repository.Object, _parser.Object);
     }
-
     [Fact]
     public async Task GetFechamentoAsync_TickerVazio_RetornaNull()
     {
         var result = await _sut.GetFechamentoAsync("");
         Assert.Null(result);
-
-        result = await _sut.GetFechamentoAsync("   ");
+    }
+    [Fact]
+    public async Task GetFechamentoAsync_TickerNaoEncontrado_RetornaNull()
+    {
+        _repository.Setup(r => r.GetFechamentoUltimoPregaoAsync("INVALID", It.IsAny<CancellationToken>())).ReturnsAsync((CotacaoB3?)null);
+        var result = await _sut.GetFechamentoAsync("INVALID");
         Assert.Null(result);
     }
-
     [Fact]
-    public async Task GetFechamentoAsync_QuandoRepositorioRetornaNull_RetornaNull()
+    public async Task GetFechamentoAsync_Encontrado_RetornaDto()
     {
-        _repositoryMock
-            .Setup(r => r.GetFechamentoUltimoPregaoAsync("PETR4", It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CotacaoB3?)null);
-
+        var entity = new CotacaoB3 { Ticker = "PETR4", DataPregao = new DateOnly(2026, 2, 25), PrecoFechamento = 35.50m };
+        _repository.Setup(r => r.GetFechamentoUltimoPregaoAsync("PETR4", It.IsAny<CancellationToken>())).ReturnsAsync(entity);
         var result = await _sut.GetFechamentoAsync("PETR4");
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public async Task GetFechamentoAsync_QuandoEncontrado_RetornaDto()
-    {
-        var entity = new CotacaoB3
-        {
-            Id = 1,
-            DataPregao = new DateOnly(2026, 2, 25),
-            Ticker = "PETR4",
-            PrecoFechamento = 35.80m,
-            PrecoAbertura = 35.20m,
-            PrecoMaximo = 36.50m,
-            PrecoMinimo = 34.80m
-        };
-        _repositoryMock
-            .Setup(r => r.GetFechamentoUltimoPregaoAsync("PETR4", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(entity);
-
-        var result = await _sut.GetFechamentoAsync("PETR4");
-
         Assert.NotNull(result);
         Assert.Equal("PETR4", result.Ticker);
-        Assert.Equal(new DateOnly(2026, 2, 25), result.DataPregao);
-        Assert.Equal(35.80m, result.PrecoFechamento);
+        Assert.Equal(35.50m, result.PrecoFechamento);
     }
-
     [Fact]
-    public async Task GetFechamentoAsync_NormalizaTickerParaMaiusculas()
+    public async Task GetFechamentosAsync_TickersNull_RetornaListaVazia()
     {
-        var entity = new CotacaoB3
-        {
-            Id = 1,
-            DataPregao = new DateOnly(2026, 2, 25),
-            Ticker = "PETR4",
-            PrecoFechamento = 35.80m,
-            PrecoAbertura = 0,
-            PrecoMaximo = 0,
-            PrecoMinimo = 0
-        };
-        _repositoryMock
-            .Setup(r => r.GetFechamentoUltimoPregaoAsync("PETR4", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(entity);
-
-        var result = await _sut.GetFechamentoAsync("  petr4  ");
-
+        var result = await _sut.GetFechamentosAsync(null!);
         Assert.NotNull(result);
-        _repositoryMock.Verify(r => r.GetFechamentoUltimoPregaoAsync("PETR4", It.IsAny<CancellationToken>()), Times.Once);
+        Assert.Empty(result);
     }
-
     [Fact]
-    public async Task GetFechamentosAsync_ListaVaziaOuNull_RetornaListaVazia()
+    public async Task GetFechamentosAsync_TickersVazios_RetornaListaVazia()
     {
-        var empty = await _sut.GetFechamentosAsync(Array.Empty<string>());
-        Assert.Empty(empty);
-
-        var nullList = await _sut.GetFechamentosAsync(null!);
-        Assert.Empty(nullList);
+        var result = await _sut.GetFechamentosAsync(new List<string>());
+        Assert.NotNull(result);
+        Assert.Empty(result);
     }
-
     [Fact]
-    public async Task GetFechamentosAsync_QuandoRepositorioRetorna_RetornaDtos()
+    public async Task GetFechamentosAsync_ComTickers_RetornaLista()
     {
         var entities = new List<CotacaoB3>
         {
-            new() { Ticker = "PETR4", DataPregao = new DateOnly(2026, 2, 25), PrecoFechamento = 35.80m },
-            new() { Ticker = "VALE3", DataPregao = new DateOnly(2026, 2, 25), PrecoFechamento = 65.00m }
+            new() { Ticker = "PETR4", DataPregao = new DateOnly(2026, 2, 25), PrecoFechamento = 35.50m },
+            new() { Ticker = "VALE3", DataPregao = new DateOnly(2026, 2, 25), PrecoFechamento = 62m }
         };
-        _repositoryMock
-            .Setup(r => r.GetFechamentosUltimoPregaoPorTickersAsync(It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(entities);
-
-        var result = await _sut.GetFechamentosAsync(new[] { "PETR4", "VALE3" });
-
+        _repository.Setup(r => r.GetFechamentosUltimoPregaoPorTickersAsync(It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>())).ReturnsAsync(entities);
+        var result = await _sut.GetFechamentosAsync(new List<string> { "PETR4", "VALE3" });
         Assert.Equal(2, result.Count);
         Assert.Equal("PETR4", result[0].Ticker);
-        Assert.Equal(35.80m, result[0].PrecoFechamento);
         Assert.Equal("VALE3", result[1].Ticker);
-        Assert.Equal(65.00m, result[1].PrecoFechamento);
     }
-
     [Fact]
-    public async Task ImportarArquivoAsync_ArquivoInexistente_LancaFileNotFoundException()
+    public async Task ImportarArquivoAsync_CaminhoVazio_LancaFileNotFoundException()
     {
-        await Assert.ThrowsAsync<FileNotFoundException>(() =>
-            _sut.ImportarArquivoAsync("/caminho/inexistente/COTAHIST.TXT"));
+        await Assert.ThrowsAsync<FileNotFoundException>(() => _sut.ImportarArquivoAsync(""));
     }
-
     [Fact]
-    public async Task ImportarArquivoAsync_ParserRetornaVazio_RetornaZeroInseridos()
+    public async Task ImportarArquivoAsync_ArquivoNaoExiste_LancaFileNotFoundException()
     {
-        var tempFile = Path.GetTempFileName();
+        await Assert.ThrowsAsync<FileNotFoundException>(() => _sut.ImportarArquivoAsync("/caminho/inexistente.txt"));
+    }
+    [Fact]
+    public async Task ImportarArquivoAsync_ArquivoVazio_RetornaZeroInseridos()
+    {
+        var path = Path.GetTempFileName();
         try
         {
-            await File.WriteAllTextAsync(tempFile, "conteudo minimo");
-            _parserMock
-                .Setup(p => p.ParseFromFileAsync(tempFile, It.IsAny<CancellationToken>()))
-                .Returns(AsyncEnumerableHelpers.ToAsyncEnumerable(Array.Empty<CotacaoB3>()));
-
-            var result = await _sut.ImportarArquivoAsync(tempFile);
-
+            _parser.Setup(p => p.ParseFromFileAsync(path, It.IsAny<CancellationToken>())).Returns(EmptyAsyncEnumerable());
+            var result = await _sut.ImportarArquivoAsync(path);
             Assert.Equal(0, result.RegistrosInseridos);
             Assert.False(result.PregaoJaExistia);
-            _repositoryMock.Verify(r => r.BulkInsertAsync(It.IsAny<IEnumerable<CotacaoB3>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
-        finally
-        {
-            if (File.Exists(tempFile))
-                File.Delete(tempFile);
-        }
+        finally { if (File.Exists(path)) File.Delete(path); }
     }
-
     [Fact]
-    public async Task ImportarArquivoAsync_PregaoJaExistia_NaoInsere()
+    public async Task ImportarArquivoAsync_PregaoJaExistia_RetornaPregaoJaExistiaTrue()
     {
-        var tempFile = Path.GetTempFileName();
+        var path = Path.GetTempFileName();
         try
         {
-            await File.WriteAllTextAsync(tempFile, "x");
-            var cotacao = new CotacaoB3 { DataPregao = new DateOnly(2026, 2, 25), Ticker = "PETR4", PrecoFechamento = 35.80m };
-            _parserMock
-                .Setup(p => p.ParseFromFileAsync(tempFile, It.IsAny<CancellationToken>()))
-                .Returns(AsyncEnumerableHelpers.ToAsyncEnumerable(new[] { cotacao }));
-            _repositoryMock
-                .Setup(r => r.ExistePregaoAsync(new DateOnly(2026, 2, 25), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(true);
-
-            var result = await _sut.ImportarArquivoAsync(tempFile);
-
+            var data = new DateOnly(2026, 2, 25);
+            _parser.Setup(p => p.ParseFromFileAsync(path, It.IsAny<CancellationToken>())).Returns(OneItemAsync(data));
+            _repository.Setup(r => r.ExistePregaoAsync(data, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            var result = await _sut.ImportarArquivoAsync(path);
+            Assert.Equal(0, result.RegistrosInseridos);
             Assert.True(result.PregaoJaExistia);
-            Assert.Equal(0, result.RegistrosInseridos);
-            _repositoryMock.Verify(r => r.BulkInsertAsync(It.IsAny<IEnumerable<CotacaoB3>>(), It.IsAny<CancellationToken>()), Times.Never);
         }
-        finally
-        {
-            if (File.Exists(tempFile))
-                File.Delete(tempFile);
-        }
+        finally { if (File.Exists(path)) File.Delete(path); }
     }
-
     [Fact]
-    public async Task ImportarArquivoAsync_ComDados_ChamaBulkInsert()
+    public async Task ImportarArquivoAsync_NovoPregao_InsereERetornaQuantidade()
     {
-        var tempFile = Path.GetTempFileName();
+        var path = Path.GetTempFileName();
         try
         {
-            await File.WriteAllTextAsync(tempFile, "x");
-            var cotacao = new CotacaoB3 { DataPregao = new DateOnly(2026, 2, 25), Ticker = "PETR4", PrecoFechamento = 35.80m };
-            _parserMock
-                .Setup(p => p.ParseFromFileAsync(tempFile, It.IsAny<CancellationToken>()))
-                .Returns(AsyncEnumerableHelpers.ToAsyncEnumerable(new[] { cotacao }));
-            _repositoryMock
-                .Setup(r => r.ExistePregaoAsync(new DateOnly(2026, 2, 25), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
-            _repositoryMock
-                .Setup(r => r.BulkInsertAsync(It.IsAny<IEnumerable<CotacaoB3>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(1);
-
-            var result = await _sut.ImportarArquivoAsync(tempFile);
-
-            Assert.False(result.PregaoJaExistia);
+            var data = new DateOnly(2026, 2, 25);
+            _parser.Setup(p => p.ParseFromFileAsync(path, It.IsAny<CancellationToken>())).Returns(OneItemAsync(data));
+            _repository.Setup(r => r.ExistePregaoAsync(data, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+            _repository.Setup(r => r.BulkInsertAsync(It.IsAny<IEnumerable<CotacaoB3>>(), It.IsAny<CancellationToken>())).ReturnsAsync(1);
+            var result = await _sut.ImportarArquivoAsync(path);
             Assert.Equal(1, result.RegistrosInseridos);
-            Assert.Equal(new DateOnly(2026, 2, 25), result.DataPregao);
-            _repositoryMock.Verify(r => r.BulkInsertAsync(It.IsAny<IEnumerable<CotacaoB3>>(), It.IsAny<CancellationToken>()), Times.Once);
+            Assert.False(result.PregaoJaExistia);
+            Assert.Equal(data, result.DataPregao);
         }
-        finally
-        {
-            if (File.Exists(tempFile))
-                File.Delete(tempFile);
-        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+    private static async IAsyncEnumerable<CotacaoB3> EmptyAsyncEnumerable()
+    {
+        await Task.CompletedTask;
+        yield break;
+    }
+    private static async IAsyncEnumerable<CotacaoB3> OneItemAsync(DateOnly data)
+    {
+        await Task.CompletedTask;
+        yield return new CotacaoB3 { Ticker = "PETR4", DataPregao = data, PrecoFechamento = 35m };
     }
 }

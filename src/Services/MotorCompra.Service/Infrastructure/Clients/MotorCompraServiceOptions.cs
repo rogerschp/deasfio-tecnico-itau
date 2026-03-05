@@ -1,5 +1,4 @@
 namespace MotorCompra.Service.Infrastructure.Clients;
-
 public class MotorCompraServiceOptions
 {
     public const string SectionName = "MotorCompra";

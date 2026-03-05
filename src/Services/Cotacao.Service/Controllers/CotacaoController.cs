@@ -1,31 +1,23 @@
 using Cotacao.Application.DTOs;
 using Cotacao.Application.Services;
+using Cotacao.Service.Options;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Options;
 namespace Cotacao.Service.Controllers;
 
-/// <summary>
-/// API de cotações B3 (COTAHIST): fechamento do último pregão e importação de arquivo.
-/// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/cotacoes")]
 [Produces("application/json")]
 public class CotacaoController : ControllerBase
 {
     private readonly ICotacaoAppService _cotacaoService;
-
-    public CotacaoController(ICotacaoAppService cotacaoService)
+    private readonly CotacaoServiceOptions _options;
+    public CotacaoController(ICotacaoAppService cotacaoService, IOptions<CotacaoServiceOptions> options)
     {
         _cotacaoService = cotacaoService;
+        _options = options.Value;
     }
 
-    /// <summary>
-    /// Obtém a cotação de fechamento do último pregão para um ticker.
-    /// </summary>
-    /// <param name="ticker">Símbolo do ativo (ex: PETR4, VALE3).</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <response code="200">Cotação encontrada.</response>
-    /// <response code="404">Ticker não encontrado ou sem dados de pregão.</response>
     [HttpGet("fechamento/{ticker}")]
     [ProducesResponseType(typeof(CotacaoFechamentoDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -37,11 +29,6 @@ public class CotacaoController : ControllerBase
         return Ok(result);
     }
 
-    /// <summary>
-    /// Obtém cotações de fechamento do último pregão para vários tickers (ex.: para o motor de compra).
-    /// </summary>
-    /// <param name="tickers">Lista de tickers separados por vírgula (ex: PETR4,VALE3,ITUB4).</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
     [HttpGet("fechamento")]
     [ProducesResponseType(typeof(IReadOnlyList<CotacaoFechamentoDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IReadOnlyList<CotacaoFechamentoDto>>> GetFechamentos(
@@ -55,26 +42,30 @@ public class CotacaoController : ControllerBase
         return Ok(result);
     }
 
-    /// <summary>
-    /// Importa um arquivo COTAHIST da B3. O arquivo deve estar acessível no caminho informado (ex: pasta cotacoes/).
-    /// Não importa novamente se já existir pregão para a data do arquivo.
-    /// </summary>
-    /// <param name="request">Caminho do arquivo TXT.</param>
     [HttpPost("importar")]
     [ProducesResponseType(typeof(ImportacaoResultDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    /// <param name="cancellationToken">Token de cancelamento.</param>
     public async Task<ActionResult<ImportacaoResultDto>> Importar(
         [FromBody] ImportarCotahistRequest request,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request?.CaminhoArquivo))
             return BadRequest(new { codigo = "CAMINHO_INVALIDO", erro = "Caminho do arquivo é obrigatório." });
-
+        var filePath = request.CaminhoArquivo.Trim();
+        if (!Path.IsPathRooted(filePath))
+        {
+            var basePath = Path.IsPathRooted(_options.PastaCotacoes)
+                ? _options.PastaCotacoes
+                : ResolverBasePathCotacoes(_options.PastaCotacoes);
+            filePath = Path.GetFullPath(Path.Combine(basePath, filePath));
+            var baseNorm = Path.GetFullPath(basePath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (!filePath.StartsWith(baseNorm + Path.DirectorySeparatorChar) && !filePath.Equals(baseNorm))
+                return BadRequest(new { codigo = "CAMINHO_INVALIDO", erro = "Caminho do arquivo inválido (fora da pasta de cotações)." });
+        }
         try
         {
-            var result = await _cotacaoService.ImportarArquivoAsync(request.CaminhoArquivo.Trim(), cancellationToken);
+            var result = await _cotacaoService.ImportarArquivoAsync(filePath, cancellationToken);
             return Ok(result);
         }
         catch (FileNotFoundException ex)
@@ -82,9 +73,22 @@ public class CotacaoController : ControllerBase
             return NotFound(new { codigo = "COTACAO_NAO_ENCONTRADA", erro = ex.Message });
         }
     }
+
+    private static string ResolverBasePathCotacoes(string cotacoesFolder)
+    {
+        var currentPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), cotacoesFolder));
+        if (Directory.Exists(currentPath))
+            return currentPath;
+        var dir = AppContext.BaseDirectory;
+        for (var i = 0; i < 10 && !string.IsNullOrEmpty(dir); i++)
+        {
+            var candidate = Path.GetFullPath(Path.Combine(dir, cotacoesFolder));
+            if (Directory.Exists(candidate))
+                return candidate;
+            dir = Path.GetDirectoryName(dir);
+        }
+        return Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), cotacoesFolder));
+    }
 }
 
-/// <summary>
-/// Request para importação de arquivo COTAHIST.
-/// </summary>
 public record ImportarCotahistRequest(string CaminhoArquivo);

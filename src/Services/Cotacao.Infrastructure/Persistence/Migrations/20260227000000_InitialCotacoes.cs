@@ -1,19 +1,14 @@
 using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-
 #nullable disable
-
 namespace Cotacao.Infrastructure.Persistence.Migrations;
 
-/// <inheritdoc />
 public partial class InitialCotacoes : Migration
 {
-    /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.AlterDatabase()
             .Annotation("MySql:CharSet", "utf8mb4");
-
         migrationBuilder.CreateTable(
             name: "Cotacoes",
             columns: table => new
@@ -33,14 +28,11 @@ public partial class InitialCotacoes : Migration
             },
             comment: "Cotações B3 (COTAHIST) por data e ticker")
             .Annotation("MySql:CharSet", "utf8mb4");
-
         migrationBuilder.Sql("ALTER TABLE `Cotacoes` MODIFY COLUMN `Id` bigint NOT NULL AUTO_INCREMENT;");
-
         migrationBuilder.CreateIndex(
             name: "IX_Cotacoes_DataPregao",
             table: "Cotacoes",
             column: "DataPregao");
-
         migrationBuilder.CreateIndex(
             name: "IX_Cotacoes_DataPregao_Ticker",
             table: "Cotacoes",
@@ -48,7 +40,6 @@ public partial class InitialCotacoes : Migration
             unique: true);
     }
 
-    /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.DropTable(name: "Cotacoes");

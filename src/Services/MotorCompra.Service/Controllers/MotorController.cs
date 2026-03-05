@@ -1,73 +1,104 @@
 using Microsoft.AspNetCore.Mvc;
 using MotorCompra.Service.Application.Entities;
+using MotorCompra.Service.Application.Exceptions;
+using MotorCompra.Service.Application.Ports;
 using MotorCompra.Service.Application.Services;
-
 namespace MotorCompra.Service.Controllers;
 
-/// <summary>
-/// API do Motor de Compra Programada: execução manual (testes) e consulta.
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
 public class MotorController : ControllerBase
 {
     private readonly IExecutarCompraProgramadaService _executarService;
-
-    public MotorController(IExecutarCompraProgramadaService executarService)
+    private readonly ICustodiaMasterRepository _custodiaMasterRepo;
+    private readonly ICotacaoFechamentoClient? _cotacaoClient;
+    public MotorController(IExecutarCompraProgramadaService executarService, ICustodiaMasterRepository custodiaMasterRepo, ICotacaoFechamentoClient? cotacaoClient = null)
     {
         _executarService = executarService;
+        _custodiaMasterRepo = custodiaMasterRepo;
+        _cotacaoClient = cotacaoClient;
     }
 
-    /// <summary>
-    /// Executa a compra programada para uma data de referência (dia 5, 15 ou 25).
-    /// Usado pelo Worker nos dias configurados ou manualmente para testes.
-    /// </summary>
-    /// <param name="request">Data de referência (ex: 2026-02-05).</param>
-    /// <param name="ct">Token de cancelamento.</param>
-    /// <response code="200">Execução realizada; retorna resultado.</response>
-    /// <response code="204">Nada a executar (já executado na data, sem cesta/clientes/cotação).</response>
     [HttpPost("executar-compra")]
     [ProducesResponseType(typeof(ExecucaoCompraResultDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<ExecucaoCompraResultDto>> ExecutarCompra(
         [FromBody] ExecutarCompraRequest request,
         CancellationToken ct)
     {
-        var dataRef = request?.DataReferencia ?? DateOnly.FromDateTime(DateTime.Today);
-        var execucao = await _executarService.ExecutarAsync(dataRef, ct);
-        if (execucao is null)
-            return NoContent();
-        return Ok(ExecucaoCompraResultDtoMapper.From(execucao));
+        var referenceDate = request?.DataReferencia ?? DateOnly.FromDateTime(DateTime.Today);
+        try
+        {
+            var execution = await _executarService.ExecutarAsync(referenceDate, ct);
+            if (execution is null)
+                return NoContent();
+            return Ok(ExecucaoCompraResultDtoMapper.From(execution));
+        }
+        catch (CompraJaExecutadaException ex)
+        {
+            return Conflict(new { codigo = "COMPRA_JA_EXECUTADA", dataReferencia = ex.DataReferencia.ToString("yyyy-MM-dd"), erro = ex.Message });
+        }
+        catch (KafkaIndisponivelException)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { codigo = "KAFKA_INDISPONIVEL", erro = "Falha ao publicar evento no Kafka." });
+        }
+    }
+
+    [HttpGet("custodia-master")]
+    [ProducesResponseType(typeof(CustodiaMasterResponseDto), StatusCodes.Status200OK)]
+    public async Task<ActionResult<CustodiaMasterResponseDto>> GetCustodiaMaster(CancellationToken ct)
+    {
+        var residuals = await _custodiaMasterRepo.GetTodosResiduosAsync(ct);
+        if (residuals.Count == 0)
+            return Ok(new CustodiaMasterResponseDto(new ContaMasterDto(1, "MST-000001", "MASTER"), new List<CustodiaMasterItemDto>(), 0));
+        var tickerSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < residuals.Count; i++)
+            tickerSet.Add(residuals[i].Ticker);
+        var tickers = new List<string>(tickerSet);
+        var priceByTicker = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
+        if (_cotacaoClient != null && tickers.Count > 0)
+        {
+            var quotes = await _cotacaoClient.GetFechamentosAsync(tickers, ct);
+            foreach (var c in quotes)
+                priceByTicker[c.Ticker] = c.PrecoFechamento;
+        }
+        decimal totalResidualValue = 0;
+        var custody = new List<CustodiaMasterItemDto>();
+        foreach (var (ticker, quantity) in residuals)
+        {
+            var currentValue = priceByTicker.GetValueOrDefault(ticker, 0);
+            totalResidualValue += quantity * currentValue;
+            custody.Add(new CustodiaMasterItemDto(ticker, quantity, currentValue, currentValue, "Resíduo distribuição"));
+        }
+        return Ok(new CustodiaMasterResponseDto(new ContaMasterDto(1, "MST-000001", "MASTER"), custody, totalResidualValue));
     }
 }
-
+public record ContaMasterDto(long Id, string NumeroConta, string Tipo);
+public record CustodiaMasterItemDto(string Ticker, int Quantidade, decimal PrecoMedio, decimal ValorAtual, string Origem);
+public record CustodiaMasterResponseDto(ContaMasterDto ContaMaster, IReadOnlyList<CustodiaMasterItemDto> Custodia, decimal ValorTotalResiduo);
 public record ExecutarCompraRequest(DateOnly? DataReferencia);
-
 public record ExecucaoCompraResultDto(
     DateTime DataExecucao,
     int TotalClientes,
     decimal TotalConsolidado,
     IReadOnlyList<OrdemCompraResultDto> OrdensCompra,
     IReadOnlyList<DistribuicaoResultDto> Distribuicoes);
-
 public record OrdemCompraResultDto(
     string Ticker,
     int QuantidadeTotal,
     decimal PrecoUnitario,
     decimal ValorTotal,
     IReadOnlyList<DetalheOrdemResultDto> Detalhes);
-
 public record DetalheOrdemResultDto(string Tipo, string Ticker, int Quantidade);
-
 public record DistribuicaoResultDto(
     long ClienteId,
     string Nome,
     decimal ValorAporte,
     IReadOnlyList<AtivoDistribuidoResultDto> Ativos);
-
 public record AtivoDistribuidoResultDto(string Ticker, int Quantidade);
-
 public static class ExecucaoCompraResultDtoMapper
 {
     public static ExecucaoCompraResultDto From(ExecucaoCompra e) => new(
