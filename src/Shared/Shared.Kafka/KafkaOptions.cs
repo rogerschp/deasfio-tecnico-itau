@@ -1,5 +1,4 @@
 namespace Shared.Kafka;
-
 public class KafkaOptions
 {
     public const string SectionName = "Kafka";

@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/MotorCompra.Service.props" />
-</Project>

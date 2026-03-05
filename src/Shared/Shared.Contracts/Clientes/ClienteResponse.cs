@@ -1,5 +1,4 @@
 namespace Shared.Contracts.Clientes;
-
 public record ClienteResponse(
     long ClienteId,
     string Nome,
@@ -9,7 +8,6 @@ public record ClienteResponse(
     bool Ativo,
     DateTime DataAdesao,
     ContaGraficaResponse? ContaGrafica);
-
 public record ContaGraficaResponse(
     long Id,
     string NumeroConta,
