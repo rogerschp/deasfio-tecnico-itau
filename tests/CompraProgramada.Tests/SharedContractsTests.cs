@@ -1,8 +1,6 @@
 using Shared.Contracts.Clientes;
 using Shared.Contracts.Admin;
-
 namespace CompraProgramada.Tests;
-
 public class SharedContractsTests
 {
     [Fact]
@@ -13,7 +11,6 @@ public class SharedContractsTests
         Assert.Equal("12345678901", request.Cpf);
         Assert.Equal(1000m, request.ValorMensal);
     }
-
     [Fact]
     public void CestaRequest_Deve_Conter_Cinco_Itens_Para_Top_Five()
     {

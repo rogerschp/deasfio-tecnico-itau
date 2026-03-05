@@ -4,14 +4,251 @@
     "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/CompraProgramada.Tests.csproj": {}
   },
   "projects": {
-    "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/CompraProgramada.Tests.csproj": {
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Admin.Service/Admin.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/CompraProgramada.Tests.csproj",
-        "projectName": "CompraProgramada.Tests",
-        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/CompraProgramada.Tests.csproj",
-        "packagesPath": "/tmp/cursor-sandbox-cache/192a365d85e61eca5c46300f6e06f9f5/nuget",
-        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/obj/",
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Admin.Service/Admin.Service.csproj",
+        "projectName": "Admin.Service",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Admin.Service/Admin.Service.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Admin.Service/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Clientes.Service/Clientes.Service.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Clientes.Service/Clientes.Service.csproj",
+        "projectName": "Clientes.Service",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Clientes.Service/Clientes.Service.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Clientes.Service/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj",
+        "projectName": "Cotacao.Application",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj",
+        "projectName": "Cotacao.Domain",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/rogerschp/.nuget/NuGet/NuGet.Config"
@@ -43,10 +280,614 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj",
+        "projectName": "Cotacao.Infrastructure",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.35, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "System.Text.Encoding.CodePages": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/Cotacao.Service.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/Cotacao.Service.csproj",
+        "projectName": "Cotacao.Service",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/Cotacao.Service.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Service/MotorCompra.Service.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Service/MotorCompra.Service.csproj",
+        "projectName": "MotorCompra.Service",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Service/MotorCompra.Service.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Service/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/Rebalanceamento.Service.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/Rebalanceamento.Service.csproj",
+        "projectName": "Rebalanceamento.Service",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/Rebalanceamento.Service.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj",
+        "projectName": "Shared.Contracts",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj",
+        "projectName": "Shared.Kafka",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/Shared.Kafka.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Kafka/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Confluent.Kafka": {
+              "target": "Package",
+              "version": "[2.6.1, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/CompraProgramada.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/CompraProgramada.Tests.csproj",
+        "projectName": "CompraProgramada.Tests",
+        "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/CompraProgramada.Tests.csproj",
+        "packagesPath": "/home/rogerschp/.nuget/packages/",
+        "outputPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/rogerschp/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Admin.Service/Admin.Service.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Admin.Service/Admin.Service.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Clientes.Service/Clientes.Service.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Clientes.Service/Clientes.Service.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Application/Cotacao.Application.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Domain/Cotacao.Domain.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Infrastructure/Cotacao.Infrastructure.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/Cotacao.Service.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Cotacao.Service/Cotacao.Service.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Service/MotorCompra.Service.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/MotorCompra.Service/MotorCompra.Service.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/Rebalanceamento.Service.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Services/Rebalanceamento.Service/Rebalanceamento.Service.csproj"
+              },
+              "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj": {
+                "projectPath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/src/Shared/Shared.Contracts/Shared.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Mvc.Testing": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
               "version": "[17.12.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
+            },
+            "System.Text.Encoding.CodePages": {
+              "target": "Package",
+              "version": "[9.0.0, )"
             },
             "coverlet.collector": {
               "target": "Package",
@@ -73,6 +914,9 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

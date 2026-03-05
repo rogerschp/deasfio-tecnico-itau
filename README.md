@@ -30,7 +30,7 @@ Sistema de compra programada que permite aos clientes aderir a um plano de inves
         │                  │                  │                  │                  │
         ▼                  ▼                  ▼                  ▼                  ▼
    [MySQL]            [MySQL]            [MySQL]            [MySQL]            [MySQL]
-   clientes_db        admin_db           cotacao_db        motor_db           rebalanceamento_db
+   clientes_db        admin_db           CotacaoDb         motor_db           rebalanceamento_db
         │                  │                  │                  │                  │
         └──────────────────┴──────────────────┴──────────────────┴──────────────────┘
                                                 │
@@ -65,7 +65,7 @@ Cada microsserviço pode usar um **database próprio** na mesma instância MySQL
 
 - `clientes_db` – Clientes, ContasGraficas, Custodias (filhote)
 - `admin_db` – CestasRecomendacao, ItensCesta
-- `cotacao_db` – Cache de cotações (COTAHIST)
+- `CotacaoDb` – Cache de cotações (COTAHIST)
 - `motor_db` – OrdensCompra, Distribuicoes, ContaMaster, CustodiaMaster, ExecucaoCompras
 - `rebalanceamento_db` – Rebalanceamentos, eventos de venda
 
@@ -87,7 +87,7 @@ Cada microsserviço pode usar um **database próprio** na mesma instância MySQL
 │       ├── MotorCompra.Service/    # API motor + orquestração :5004
 │       ├── MotorCompra.Worker/     # Background job dias 5/15/25
 │       └── Rebalanceamento.Service/# API rebalanceamento :5005
-├── cotacoes/                       # Arquivos COTAHIST da B3 (COTAHIST_D*.TXT)
+├── cotacoes/                       # Pasta padrão para COTAHIST (configurável no Cotacao.Service)
 ├── tests/                          # Testes unitários e integração
 ├── Docs/                           # Documentação do desafio
 ├── docker-compose.yml              # MySQL + Kafka (+ Zookeeper)
@@ -121,7 +121,7 @@ Aguarde MySQL e Kafka estarem saudáveis.
 docker exec -it compraprogramada-mysql mysql -uroot -proot -e "
 CREATE DATABASE IF NOT EXISTS clientes_db;
 CREATE DATABASE IF NOT EXISTS admin_db;
-CREATE DATABASE IF NOT EXISTS cotacao_db;
+CREATE DATABASE IF NOT EXISTS CotacaoDb;
 CREATE DATABASE IF NOT EXISTS motor_db;
 CREATE DATABASE IF NOT EXISTS rebalanceamento_db;
 "
