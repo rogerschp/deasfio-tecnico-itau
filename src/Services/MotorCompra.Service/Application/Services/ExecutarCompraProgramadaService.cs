@@ -38,7 +38,7 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
         _kafka = kafka;
         _logger = logger;
     }
-    public async Task<ExecucaoCompra?> ExecutarAsync(DateOnly referenceDate, CancellationToken ct = default)
+    public async Task<ExecucaoCompraComResiduos?> ExecutarAsync(DateOnly referenceDate, CancellationToken ct = default)
     {
         if (await _execucaoRepo.JaExecutouNaDataAsync(referenceDate, ct))
             throw new CompraJaExecutadaException(referenceDate);
@@ -137,9 +137,9 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
             boughtByTicker[item.Ticker] = totalQty;
         }
 
-        var availableByTicker = new Dictionary<string, int>();
+        var totalAvailableByTicker = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         foreach (var t in tickers)
-            availableByTicker[t] = masterBalances.GetValueOrDefault(t, 0) + boughtByTicker.GetValueOrDefault(t, 0);
+            totalAvailableByTicker[t] = masterBalances.GetValueOrDefault(t, 0) + boughtByTicker.GetValueOrDefault(t, 0);
 
         var distributions = new List<DistribuicaoCliente>();
         foreach (var (customerId, name, cpf, _, contributionAmount) in contributions)
@@ -148,13 +148,10 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
             var assets = new List<AtivoDistribuidoDto>();
             foreach (var item in basket.Itens)
             {
-                var available = availableByTicker.GetValueOrDefault(item.Ticker, 0);
-                var customerQty = (int)Math.Floor(available * proportion);
+                var totalAvailable = totalAvailableByTicker.GetValueOrDefault(item.Ticker, 0);
+                var customerQty = (int)Math.Floor(totalAvailable * proportion);
                 if (customerQty > 0)
-                {
                     assets.Add(new AtivoDistribuidoDto(item.Ticker, customerQty));
-                    availableByTicker[item.Ticker] = available - customerQty;
-                }
             }
             distributions.Add(new DistribuicaoCliente
             {
@@ -164,6 +161,16 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
                 ValorAporte = contributionAmount,
                 Ativos = assets
             });
+        }
+
+        var availableByTicker = new Dictionary<string, int>(totalAvailableByTicker);
+        foreach (var dist in distributions)
+        {
+            foreach (var a in dist.Ativos)
+            {
+                var cur = availableByTicker.GetValueOrDefault(a.Ticker, 0);
+                availableByTicker[a.Ticker] = Math.Max(0, cur - a.Quantidade);
+            }
         }
 
         var execution = new ExecucaoCompra
@@ -181,6 +188,8 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
         for (var i = 0; i < tickers.Count; i++)
             residuals.Add((tickers[i], availableByTicker.GetValueOrDefault(tickers[i], 0)));
         await _custodiaRepo.DefinirResiduosAsync(residuals, ct);
+
+        var result = new ExecucaoCompraComResiduos(execution, residuals);
 
         var installment = referenceDate.Day switch { 5 => 1, 15 => 2, 25 => 3, _ => (int?)null };
         foreach (var dist in distributions)
@@ -218,7 +227,7 @@ public class ExecutarCompraProgramadaService : IExecutarCompraProgramadaService
                 }
             }
         }
-        return execution;
+        return result;
     }
     private static (int LotePadrao, int Fracionario) SepararLoteFracionario(int quantity)
     {

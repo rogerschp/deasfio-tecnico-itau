@@ -52,7 +52,7 @@
           "System.Text.Encoding.CodePages": "9.0.0",
           "coverlet.collector": "6.0.2",
           "xunit": "2.9.2",
-          "xunit.runner.visualstudio": "2.8.2",
+          "xunit.runner.visualstudio": "3.1.5",
           "Microsoft.AspNetCore.Antiforgery": "9.0.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions": "9.0.0.0",
           "Microsoft.AspNetCore.Authentication.BearerToken": "9.0.0.0",
@@ -377,14 +377,14 @@
           "lib/net6.0/Castle.Core.dll": {}
         }
       },
-      "Confluent.Kafka/2.6.1": {
+      "Confluent.Kafka/2.13.1": {
         "dependencies": {
-          "librdkafka.redist": "2.6.1"
+          "librdkafka.redist": "2.13.0"
         },
         "runtime": {
           "lib/net8.0/Confluent.Kafka.dll": {
-            "assemblyVersion": "2.6.1.0",
-            "fileVersion": "2.6.1.0"
+            "assemblyVersion": "2.13.1.0",
+            "fileVersion": "2.13.1.0"
           }
         },
         "compile": {
@@ -403,7 +403,7 @@
           "lib/net7.0/Dapper.dll": {}
         }
       },
-      "librdkafka.redist/2.6.1": {
+      "librdkafka.redist/2.13.0": {
         "runtimeTargets": {
           "runtimes/linux-arm64/native/librdkafka.so": {
             "rid": "linux-arm64",
@@ -1308,7 +1308,7 @@
           "lib/netstandard1.1/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.runner.visualstudio/2.8.2": {},
+      "xunit.runner.visualstudio/3.1.5": {},
       "Admin.Service/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.OpenApi": "9.0.4",
@@ -1458,7 +1458,7 @@
       },
       "Shared.Kafka/1.0.0": {
         "dependencies": {
-          "Confluent.Kafka": "2.6.1",
+          "Confluent.Kafka": "2.13.1",
           "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
           "Microsoft.Extensions.Options": "9.0.0",
@@ -3301,12 +3301,12 @@
       "path": "castle.core/5.1.1",
       "hashPath": "castle.core.5.1.1.nupkg.sha512"
     },
-    "Confluent.Kafka/2.6.1": {
+    "Confluent.Kafka/2.13.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-DCap4xzbUzItoFVBCmBbng6q4XbaxfqLgR/b56b67L9S0iUTIwrSAvk3MPegyQNn56+1C/m3ytwy1YU+nAuqDA==",
-      "path": "confluent.kafka/2.6.1",
-      "hashPath": "confluent.kafka.2.6.1.nupkg.sha512"
+      "sha512": "sha512-U/YV8nRXkZdjgF9o2XSG4zO1+NlyCfC7a3ZpQQHzNpyRvQfL/j261Ng/TKJ0CY/m0e2HlxLqZfl16wI/l+Zxqg==",
+      "path": "confluent.kafka/2.13.1",
+      "hashPath": "confluent.kafka.2.13.1.nupkg.sha512"
     },
     "coverlet.collector/6.0.2": {
       "type": "package",
@@ -3322,12 +3322,12 @@
       "path": "dapper/2.1.35",
       "hashPath": "dapper.2.1.35.nupkg.sha512"
     },
-    "librdkafka.redist/2.6.1": {
+    "librdkafka.redist/2.13.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-RcpH/eqmfp08RmfeQdHeJEz0OaAcYWJo8EqQiU4ohDrBygIXbWhCTksUFkhYGqap/5Ycm+HC9RVSlwetFo9SlA==",
-      "path": "librdkafka.redist/2.6.1",
-      "hashPath": "librdkafka.redist.2.6.1.nupkg.sha512"
+      "sha512": "sha512-PCtGYOJvqDo+dqxRsBidc6OJGGSCIqmh0wIWgTQljuzaxeAM8uAheNwZ/6o60hueObJj1vPczNLLeoLEu1+Q3g==",
+      "path": "librdkafka.redist/2.13.0",
+      "hashPath": "librdkafka.redist.2.13.0.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Mvc.Testing/9.0.0": {
       "type": "package",
@@ -3763,12 +3763,12 @@
       "path": "xunit.extensibility.execution/2.9.2",
       "hashPath": "xunit.extensibility.execution.2.9.2.nupkg.sha512"
     },
-    "xunit.runner.visualstudio/2.8.2": {
+    "xunit.runner.visualstudio/3.1.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-vm1tbfXhFmjFMUmS4M0J0ASXz3/U5XvXBa6DOQUL3fEz4Vt6YPhv+ESCarx6M6D+9kJkJYZKCNvJMas1+nVfmQ==",
-      "path": "xunit.runner.visualstudio/2.8.2",
-      "hashPath": "xunit.runner.visualstudio.2.8.2.nupkg.sha512"
+      "sha512": "sha512-tKi7dSTwP4m5m9eXPM2Ime4Kn7xNf4x4zT9sdLO/G4hZVnQCRiMTWoSZqI/pYTVeI27oPPqHBKYI/DjJ9GsYgA==",
+      "path": "xunit.runner.visualstudio/3.1.5",
+      "hashPath": "xunit.runner.visualstudio.3.1.5.nupkg.sha512"
     },
     "Admin.Service/1.0.0": {
       "type": "project",

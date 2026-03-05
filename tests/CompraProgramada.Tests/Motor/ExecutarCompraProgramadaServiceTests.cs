@@ -70,6 +70,7 @@ public class ExecutarCompraProgramadaServiceTests
         _custodiaRepoMock.Setup(r => r.GetSaldosPorTickerAsync(It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new Dictionary<string, int>());
         _execucaoRepoMock.Setup(r => r.SalvarExecucaoAsync(It.IsAny<ExecucaoCompra>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((ExecucaoCompra e, CancellationToken _) => { e.Id = 100; return e; });
+        _custodiaRepoMock.Setup(r => r.DefinirResiduosAsync(It.IsAny<IReadOnlyList<(string, int)>>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
     }
     [Fact]
     public async Task ExecutarAsync_JaExecutouNaData_LancaCompraJaExecutadaException()
@@ -135,14 +136,17 @@ public class ExecutarCompraProgramadaServiceTests
         var data = new DateOnly(2026, 2, 5);
         var result = await _sut.ExecutarAsync(data);
         Assert.NotNull(result);
-        Assert.Equal(100, result.Id);
-        Assert.Equal(data, result.DataReferencia);
-        Assert.Equal(2, result.TotalClientes);
-        Assert.Equal(3000m, Math.Round(result.TotalConsolidado, 2));
-        Assert.NotEmpty(result.Ordens);
-        Assert.Equal(5, result.Ordens.Count);
-        Assert.NotEmpty(result.Distribuicoes);
-        Assert.Equal(2, result.Distribuicoes.Count);
+        var exec = result.Execucao;
+        Assert.NotNull(exec);
+        Assert.Equal(100, exec.Id);
+        Assert.Equal(data, exec.DataReferencia);
+        Assert.Equal(2, exec.TotalClientes);
+        Assert.Equal(3000m, Math.Round(exec.TotalConsolidado, 2));
+        Assert.NotEmpty(exec.Ordens);
+        Assert.Equal(5, exec.Ordens.Count);
+        Assert.NotEmpty(exec.Distribuicoes);
+        Assert.Equal(2, exec.Distribuicoes.Count);
+        Assert.NotNull(result.Residuos);
         _execucaoRepoMock.Verify(r => r.SalvarExecucaoAsync(It.IsAny<ExecucaoCompra>(), It.IsAny<CancellationToken>()), Times.Once);
         _custodiaRepoMock.Verify(r => r.DefinirResiduosAsync(It.IsAny<IReadOnlyList<(string, int)>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -163,7 +167,7 @@ public class ExecutarCompraProgramadaServiceTests
             .ReturnsAsync(new Dictionary<string, int> { { "PETR4", 5 } });
         var result = await _sut.ExecutarAsync(new DateOnly(2026, 2, 5));
         Assert.NotNull(result);
-        var ordemPetr4 = result.Ordens.FirstOrDefault(o => o.Ticker == "PETR4");
+        var ordemPetr4 = result.Execucao.Ordens.FirstOrDefault(o => o.Ticker == "PETR4");
         Assert.NotNull(ordemPetr4);
         Assert.True(ordemPetr4.QuantidadeTotal <= 25, "Quantidade de PETR4 deve ser descontada do saldo master.");
     }

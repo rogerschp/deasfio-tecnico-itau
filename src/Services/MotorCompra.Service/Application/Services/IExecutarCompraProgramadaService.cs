@@ -3,6 +3,7 @@ namespace MotorCompra.Service.Application.Services;
 
 public interface IExecutarCompraProgramadaService
 {
-
-    Task<ExecucaoCompra?> ExecutarAsync(DateOnly referenceDate, CancellationToken ct = default);
+    Task<ExecucaoCompraComResiduos?> ExecutarAsync(DateOnly referenceDate, CancellationToken ct = default);
 }
+
+public record ExecucaoCompraComResiduos(ExecucaoCompra Execucao, IReadOnlyList<(string Ticker, int Quantidade)> Residuos);

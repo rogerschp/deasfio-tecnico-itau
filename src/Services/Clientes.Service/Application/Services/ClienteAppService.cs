@@ -50,6 +50,8 @@ public class ClienteAppService : IClienteAppService
     {
         var cliente = await _clienteRepo.GetByIdAsync(clienteId, ct);
         if (cliente is null) return null;
+        if (!cliente.Ativo)
+            throw new InvalidOperationException("Cliente já havia saído do produto.");
         cliente.Ativo = false;
         cliente.DataSaida = DateTime.UtcNow;
         await _clienteRepo.SalvarAsync(cliente, ct);
@@ -152,9 +154,11 @@ public class ClienteAppService : IClienteAppService
         if (carteira is null) return null;
         var aportes = await _aporteRepo.GetPorClienteOrdenadoPorDataAsync(clienteId, ct);
         var historicoAportes = new List<HistoricoAporteDto>(aportes.Count);
+        decimal totalAportado = 0;
         for (var i = 0; i < aportes.Count; i++)
         {
             var a = aportes[i];
+            totalAportado += a.Valor;
             historicoAportes.Add(new HistoricoAporteDto(
                 a.DataAporte.ToString("yyyy-MM-dd"),
                 a.Valor,
@@ -174,11 +178,15 @@ public class ClienteAppService : IClienteAppService
                 valorInvestidoAcum,
                 Math.Round(rentPct, 2)));
         }
+        var valorAtual = carteira.Resumo.ValorAtualCarteira;
+        var plTotal = valorAtual - totalAportado;
+        var rentabilidadePct = totalAportado > 0 ? (valorAtual - totalAportado) / totalAportado * 100 : 0;
+        var resumoRentabilidade = new CarteiraResumoDto(totalAportado, valorAtual, plTotal, Math.Round((decimal)rentabilidadePct, 2));
         return new RentabilidadeResponseDto(
             clienteId,
             cliente.Nome,
             DateTime.UtcNow,
-            carteira.Resumo,
+            resumoRentabilidade,
             historicoAportes,
             evolucaoCarteira);
     }

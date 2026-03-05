@@ -1,8 +1,6 @@
 /home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/bin/Debug/net9.0/.msCoverageSourceRootsMapping_CompraProgramada.Tests
 /home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/bin/Debug/net9.0/CoverletSourceRootsMapping_CompraProgramada.Tests
 /home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/bin/Debug/net9.0/xunit.runner.visualstudio.testadapter.dll
-/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/bin/Debug/net9.0/xunit.runner.reporters.netcoreapp10.dll
-/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/bin/Debug/net9.0/xunit.runner.utility.netcoreapp10.dll
 /home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/bin/Debug/net9.0/CompraProgramada.Tests.deps.json
 /home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/bin/Debug/net9.0/CompraProgramada.Tests.runtimeconfig.json
 /home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/bin/Debug/net9.0/CompraProgramada.Tests.dll

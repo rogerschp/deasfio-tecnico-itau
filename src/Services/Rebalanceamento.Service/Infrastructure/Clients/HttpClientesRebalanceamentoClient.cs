@@ -50,7 +50,7 @@ public class HttpClientesRebalanceamentoClient : IClientesRebalanceamentoClient
         try
         {
             var body = new { Ticker = ticker, Quantidade = quantidade, PrecoVenda = precoVenda };
-            var response = await _http.PostAsJsonAsync($"api/clientes/{clienteId}/custodia/venda", body, Json, ct);
+            var response = await _http.PostAsJsonAsync($"api/internal/clientes/{clienteId}/custodia/venda", body, Json, ct);
             if (!response.IsSuccessStatusCode) return null;
             var raw = await response.Content.ReadFromJsonAsync<VendaResultResponse>(Json, ct);
             return raw != null ? new VendaCustodiaResultDto(raw.ValorVenda, raw.Lucro) : null;
@@ -65,7 +65,7 @@ public class HttpClientesRebalanceamentoClient : IClientesRebalanceamentoClient
         try
         {
             var body = new { Ticker = ticker, Quantidade = quantidade, PrecoUnitario = precoUnitario };
-            var response = await _http.PostAsJsonAsync($"api/clientes/{clienteId}/custodia/compra", body, Json, ct);
+            var response = await _http.PostAsJsonAsync($"api/internal/clientes/{clienteId}/custodia/compra", body, Json, ct);
             return response.IsSuccessStatusCode;
         }
         catch (HttpRequestException)

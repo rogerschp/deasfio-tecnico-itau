@@ -9,10 +9,12 @@ public class ClientesControllerTests
 {
     private readonly Mock<IClienteAppService> _service;
     private readonly ClientesController _controller;
+    private readonly ClientesInternalController _internalController;
     public ClientesControllerTests()
     {
         _service = new Mock<IClienteAppService>();
         _controller = new ClientesController(_service.Object);
+        _internalController = new ClientesInternalController(_service.Object);
     }
     [Fact]
     public async Task Adesao_RequestNull_RetornaBadRequest()
@@ -110,6 +112,16 @@ public class ClientesControllerTests
         Assert.Same(dto, ok.Value);
     }
     [Fact]
+    public async Task Saida_ClienteJaInativo_Retorna400()
+    {
+        _service.Setup(s => s.SairAsync(1, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("Cliente já havia saído do produto."));
+        var result = await _controller.Saida(1);
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal(400, badRequest.StatusCode);
+        Assert.NotNull(badRequest.Value);
+    }
+    [Fact]
     public async Task GetAtivos_Sucesso_Retorna200()
     {
         var list = new List<ClienteAtivoDto> { new(1, "João", "123", 3000m, 10), new(2, "Maria", "456", 2000m, 11) };
@@ -163,25 +175,25 @@ public class ClientesControllerTests
     {
         var request = new DistribuicaoRequestDto(1, 1, new List<ItemDistribuicaoDto> { new("PETR4", 10, 35m) }, new DateOnly(2026, 2, 5), 1000m, 1);
         _service.Setup(s => s.RegistrarDistribuicaoAsync(It.IsAny<long>(), It.IsAny<long>(), It.IsAny<IReadOnlyList<(string Ticker, int Quantidade, decimal PrecoUnitario)>>(), It.IsAny<DateOnly?>(), It.IsAny<decimal?>(), It.IsAny<int?>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-        var result = await _controller.RegistrarDistribuicao(request, CancellationToken.None);
+        var result = await _internalController.RegistrarDistribuicao(request, CancellationToken.None);
         Assert.IsType<NoContentResult>(result);
     }
     [Fact]
     public async Task RegistrarDistribuicao_ItensNull_Retorna204()
     {
-        var result = await _controller.RegistrarDistribuicao(new DistribuicaoRequestDto(1, 1, null!, null, null, null), CancellationToken.None);
+        var result = await _internalController.RegistrarDistribuicao(new DistribuicaoRequestDto(1, 1, null!, null, null, null), CancellationToken.None);
         Assert.IsType<NoContentResult>(result);
     }
     [Fact]
     public async Task RegistrarDistribuicao_ItensVazios_Retorna204()
     {
-        var result = await _controller.RegistrarDistribuicao(new DistribuicaoRequestDto(1, 1, new List<ItemDistribuicaoDto>(), null, null, null), CancellationToken.None);
+        var result = await _internalController.RegistrarDistribuicao(new DistribuicaoRequestDto(1, 1, new List<ItemDistribuicaoDto>(), null, null, null), CancellationToken.None);
         Assert.IsType<NoContentResult>(result);
     }
     [Fact]
     public async Task VendaCustodia_QuantidadeInvalida_Retorna400()
     {
-        var result = await _controller.VendaCustodia(1, new VendaCustodiaRequest("PETR4", 0, 35m), CancellationToken.None);
+        var result = await _internalController.VendaCustodia(1, new VendaCustodiaRequest("PETR4", 0, 35m), CancellationToken.None);
         var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Equal(400, badRequest.StatusCode);
     }
@@ -190,7 +202,7 @@ public class ClientesControllerTests
     {
         var dto = new VendaCustodiaResultDto(350m, 50m);
         _service.Setup(s => s.VenderAtivoAsync(1, "PETR4", 10, 35m, It.IsAny<CancellationToken>())).ReturnsAsync(dto);
-        var result = await _controller.VendaCustodia(1, new VendaCustodiaRequest("PETR4", 10, 35m), CancellationToken.None);
+        var result = await _internalController.VendaCustodia(1, new VendaCustodiaRequest("PETR4", 10, 35m), CancellationToken.None);
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(200, ok.StatusCode);
         Assert.Same(dto, ok.Value);
@@ -199,14 +211,14 @@ public class ClientesControllerTests
     public async Task VendaCustodia_NaoEncontrado_Retorna404()
     {
         _service.Setup(s => s.VenderAtivoAsync(999, It.IsAny<string>(), It.IsAny<int>(), It.IsAny<decimal>(), It.IsAny<CancellationToken>())).ReturnsAsync((VendaCustodiaResultDto?)null);
-        var result = await _controller.VendaCustodia(999, new VendaCustodiaRequest("PETR4", 10, 35m), CancellationToken.None);
+        var result = await _internalController.VendaCustodia(999, new VendaCustodiaRequest("PETR4", 10, 35m), CancellationToken.None);
         var notFound = Assert.IsType<NotFoundObjectResult>(result.Result);
         Assert.Equal(404, notFound.StatusCode);
     }
     [Fact]
     public async Task CompraCustodia_QuantidadeInvalida_Retorna400()
     {
-        var result = await _controller.CompraCustodia(1, new CompraCustodiaRequest("PETR4", 0, 35m), CancellationToken.None);
+        var result = await _internalController.CompraCustodia(1, new CompraCustodiaRequest("PETR4", 0, 35m), CancellationToken.None);
         var badRequest = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal(400, badRequest.StatusCode);
     }
@@ -214,14 +226,14 @@ public class ClientesControllerTests
     public async Task CompraCustodia_Sucesso_Retorna204()
     {
         _service.Setup(s => s.RegistrarCompraRebalanceamentoAsync(1, "PETR4", 10, 35m, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        var result = await _controller.CompraCustodia(1, new CompraCustodiaRequest("PETR4", 10, 35m), CancellationToken.None);
+        var result = await _internalController.CompraCustodia(1, new CompraCustodiaRequest("PETR4", 10, 35m), CancellationToken.None);
         Assert.IsType<NoContentResult>(result);
     }
     [Fact]
     public async Task CompraCustodia_ClienteNaoEncontrado_Retorna404()
     {
         _service.Setup(s => s.RegistrarCompraRebalanceamentoAsync(999, It.IsAny<string>(), It.IsAny<int>(), It.IsAny<decimal>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
-        var result = await _controller.CompraCustodia(999, new CompraCustodiaRequest("PETR4", 10, 35m), CancellationToken.None);
+        var result = await _internalController.CompraCustodia(999, new CompraCustodiaRequest("PETR4", 10, 35m), CancellationToken.None);
         var notFound = Assert.IsType<NotFoundObjectResult>(result);
         Assert.Equal(404, notFound.StatusCode);
     }

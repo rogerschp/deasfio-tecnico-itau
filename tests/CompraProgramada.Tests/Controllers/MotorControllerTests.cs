@@ -31,25 +31,28 @@ public class MotorControllerTests
             Ordens = new List<OrdemCompraItem>(),
             Distribuicoes = new List<DistribuicaoCliente>()
         };
-        _executarService.Setup(s => s.ExecutarAsync(dataRef, It.IsAny<CancellationToken>())).ReturnsAsync(execucao);
+        var resultWithResiduos = new ExecucaoCompraComResiduos(execucao, new List<(string, int)>());
+        _executarService.Setup(s => s.ExecutarAsync(dataRef, It.IsAny<CancellationToken>())).ReturnsAsync(resultWithResiduos);
         var result = await _controller.ExecutarCompra(new ExecutarCompraRequest(dataRef), CancellationToken.None);
         var ok = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(200, ok.StatusCode);
         var dto = Assert.IsType<ExecucaoCompraResultDto>(ok.Value);
         Assert.Equal(2, dto.TotalClientes);
         Assert.Equal(3000m, dto.TotalConsolidado);
+        Assert.NotNull(dto.ResiduosCustMaster);
+        Assert.NotNull(dto.Mensagem);
     }
     [Fact]
     public async Task ExecutarCompra_SemResultado_Retorna204()
     {
-        _executarService.Setup(s => s.ExecutarAsync(It.IsAny<DateOnly>(), It.IsAny<CancellationToken>())).ReturnsAsync((ExecucaoCompra?)null);
+        _executarService.Setup(s => s.ExecutarAsync(It.IsAny<DateOnly>(), It.IsAny<CancellationToken>())).ReturnsAsync((ExecucaoCompraComResiduos?)null);
         var result = await _controller.ExecutarCompra(new ExecutarCompraRequest(new DateOnly(2026, 2, 5)), CancellationToken.None);
         Assert.IsType<NoContentResult>(result.Result);
     }
     [Fact]
     public async Task ExecutarCompra_RequestNull_UsaDataHoje()
     {
-        _executarService.Setup(s => s.ExecutarAsync(It.IsAny<DateOnly>(), It.IsAny<CancellationToken>())).ReturnsAsync((ExecucaoCompra?)null);
+        _executarService.Setup(s => s.ExecutarAsync(It.IsAny<DateOnly>(), It.IsAny<CancellationToken>())).ReturnsAsync((ExecucaoCompraComResiduos?)null);
         var result = await _controller.ExecutarCompra(null!, CancellationToken.None);
         _executarService.Verify(s => s.ExecutarAsync(It.IsAny<DateOnly>(), It.IsAny<CancellationToken>()), Times.Once);
         Assert.IsType<NoContentResult>(result.Result);

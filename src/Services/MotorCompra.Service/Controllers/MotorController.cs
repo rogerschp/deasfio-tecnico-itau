@@ -32,10 +32,10 @@ public class MotorController : ControllerBase
         var referenceDate = request?.DataReferencia ?? DateOnly.FromDateTime(DateTime.Today);
         try
         {
-            var execution = await _executarService.ExecutarAsync(referenceDate, ct);
-            if (execution is null)
+            var result = await _executarService.ExecutarAsync(referenceDate, ct);
+            if (result is null)
                 return NoContent();
-            return Ok(ExecucaoCompraResultDtoMapper.From(execution));
+            return Ok(ExecucaoCompraResultDtoMapper.From(result));
         }
         catch (CompraJaExecutadaException ex)
         {
@@ -85,7 +85,11 @@ public record ExecucaoCompraResultDto(
     int TotalClientes,
     decimal TotalConsolidado,
     IReadOnlyList<OrdemCompraResultDto> OrdensCompra,
-    IReadOnlyList<DistribuicaoResultDto> Distribuicoes);
+    IReadOnlyList<DistribuicaoResultDto> Distribuicoes,
+    IReadOnlyList<ResiduoCustMasterDto> ResiduosCustMaster,
+    int EventosIRPublicados,
+    string Mensagem);
+public record ResiduoCustMasterDto(string Ticker, int Quantidade);
 public record OrdemCompraResultDto(
     string Ticker,
     int QuantidadeTotal,
@@ -101,19 +105,28 @@ public record DistribuicaoResultDto(
 public record AtivoDistribuidoResultDto(string Ticker, int Quantidade);
 public static class ExecucaoCompraResultDtoMapper
 {
-    public static ExecucaoCompraResultDto From(ExecucaoCompra e) => new(
-        DataExecucao: e.DataExecucao,
-        TotalClientes: e.TotalClientes,
-        TotalConsolidado: e.TotalConsolidado,
-        OrdensCompra: e.Ordens.Select(o => new OrdemCompraResultDto(
-            o.Ticker,
-            o.QuantidadeTotal,
-            o.PrecoUnitario,
-            o.ValorTotal,
-            o.Detalhes.Select(d => new DetalheOrdemResultDto(d.Tipo, d.Ticker, d.Quantidade)).ToList())).ToList(),
-        Distribuicoes: e.Distribuicoes.Select(d => new DistribuicaoResultDto(
-            d.ClienteId,
-            d.Nome,
-            d.ValorAporte,
-            d.Ativos.Select(a => new AtivoDistribuidoResultDto(a.Ticker, a.Quantidade)).ToList())).ToList());
+    public static ExecucaoCompraResultDto From(ExecucaoCompraComResiduos r)
+    {
+        var e = r.Execucao;
+        var eventosIR = e.Distribuicoes.Sum(d => d.Ativos.Count);
+        var residuos = r.Residuos.Where(x => x.Quantidade > 0).Select(x => new ResiduoCustMasterDto(x.Ticker, x.Quantidade)).ToList();
+        return new ExecucaoCompraResultDto(
+            DataExecucao: e.DataExecucao,
+            TotalClientes: e.TotalClientes,
+            TotalConsolidado: e.TotalConsolidado,
+            OrdensCompra: e.Ordens.Select(o => new OrdemCompraResultDto(
+                o.Ticker,
+                o.QuantidadeTotal,
+                o.PrecoUnitario,
+                o.ValorTotal,
+                o.Detalhes.Select(d => new DetalheOrdemResultDto(d.Tipo, d.Ticker, d.Quantidade)).ToList())).ToList(),
+            Distribuicoes: e.Distribuicoes.Select(d => new DistribuicaoResultDto(
+                d.ClienteId,
+                d.Nome,
+                d.ValorAporte,
+                d.Ativos.Select(a => new AtivoDistribuidoResultDto(a.Ticker, a.Quantidade)).ToList())).ToList(),
+            ResiduosCustMaster: residuos,
+            EventosIRPublicados: eventosIR,
+            Mensagem: $"Compra programada executada com sucesso para {e.TotalClientes} cliente(s).");
+    }
 }

@@ -46,7 +46,7 @@ public class AdminController : ControllerBase
     public async Task<ActionResult<CestaResponseDto>> GetCestaAtual(CancellationToken ct = default)
     {
         var result = await _cestaService.GetAtualAsync(ct);
-        if (result is null) return NotFound(new { codigo = "CESTA_NAO_ENCONTRADA", erro = "Nenhuma cesta cadastrada." });
+        if (result is null) return NotFound(new { codigo = "CESTA_NAO_ENCONTRADA", erro = "Nenhuma cesta ativa encontrada." });
         return Ok(result);
     }
 

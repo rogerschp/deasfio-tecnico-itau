@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "BalfMN4dvvo=",
+  "dgSpecHash": "xPfsOFQ25wM=",
   "success": true,
   "projectFilePath": "/home/rogerschp/dev/personal/desafio-tecnico-itau/tests/CompraProgramada.Tests/CompraProgramada.Tests.csproj",
   "expectedPackageFiles": [
     "/home/rogerschp/.nuget/packages/castle.core/5.1.1/castle.core.5.1.1.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/confluent.kafka/2.6.1/confluent.kafka.2.6.1.nupkg.sha512",
+    "/home/rogerschp/.nuget/packages/confluent.kafka/2.13.1/confluent.kafka.2.13.1.nupkg.sha512",
     "/home/rogerschp/.nuget/packages/coverlet.collector/6.0.2/coverlet.collector.6.0.2.nupkg.sha512",
     "/home/rogerschp/.nuget/packages/dapper/2.1.35/dapper.2.1.35.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/librdkafka.redist/2.6.1/librdkafka.redist.2.6.1.nupkg.sha512",
+    "/home/rogerschp/.nuget/packages/librdkafka.redist/2.13.0/librdkafka.redist.2.13.0.nupkg.sha512",
     "/home/rogerschp/.nuget/packages/microsoft.aspnetcore.mvc.testing/9.0.0/microsoft.aspnetcore.mvc.testing.9.0.0.nupkg.sha512",
     "/home/rogerschp/.nuget/packages/microsoft.aspnetcore.openapi/9.0.4/microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
     "/home/rogerschp/.nuget/packages/microsoft.aspnetcore.testhost/9.0.0/microsoft.aspnetcore.testhost.9.0.0.nupkg.sha512",
@@ -71,7 +71,7 @@
     "/home/rogerschp/.nuget/packages/xunit.core/2.9.2/xunit.core.2.9.2.nupkg.sha512",
     "/home/rogerschp/.nuget/packages/xunit.extensibility.core/2.9.2/xunit.extensibility.core.2.9.2.nupkg.sha512",
     "/home/rogerschp/.nuget/packages/xunit.extensibility.execution/2.9.2/xunit.extensibility.execution.2.9.2.nupkg.sha512",
-    "/home/rogerschp/.nuget/packages/xunit.runner.visualstudio/2.8.2/xunit.runner.visualstudio.2.8.2.nupkg.sha512"
+    "/home/rogerschp/.nuget/packages/xunit.runner.visualstudio/3.1.5/xunit.runner.visualstudio.3.1.5.nupkg.sha512"
   ],
   "logs": []
 }

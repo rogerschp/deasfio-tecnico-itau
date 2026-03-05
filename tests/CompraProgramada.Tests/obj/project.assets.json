@@ -18,10 +18,10 @@
           }
         }
       },
-      "Confluent.Kafka/2.6.1": {
+      "Confluent.Kafka/2.13.1": {
         "type": "package",
         "dependencies": {
-          "librdkafka.redist": "2.6.1"
+          "librdkafka.redist": "2.13.0"
         },
         "compile": {
           "lib/net8.0/Confluent.Kafka.dll": {
@@ -53,7 +53,7 @@
           }
         }
       },
-      "librdkafka.redist/2.6.1": {
+      "librdkafka.redist/2.13.0": {
         "type": "package",
         "build": {
           "build/_._": {}
@@ -1496,16 +1496,16 @@
           }
         }
       },
-      "xunit.runner.visualstudio/2.8.2": {
+      "xunit.runner.visualstudio/3.1.5": {
         "type": "package",
         "compile": {
-          "lib/net6.0/_._": {}
+          "lib/net8.0/_._": {}
         },
         "runtime": {
-          "lib/net6.0/_._": {}
+          "lib/net8.0/_._": {}
         },
         "build": {
-          "build/net6.0/xunit.runner.visualstudio.props": {}
+          "build/net8.0/xunit.runner.visualstudio.props": {}
         }
       },
       "Admin.Service/1.0.0": {
@@ -1665,7 +1665,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
-          "Confluent.Kafka": "2.6.1",
+          "Confluent.Kafka": "2.13.1",
           "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
           "Microsoft.Extensions.Options": "9.0.0",
@@ -1705,16 +1705,16 @@
         "readme.txt"
       ]
     },
-    "Confluent.Kafka/2.6.1": {
-      "sha512": "DCap4xzbUzItoFVBCmBbng6q4XbaxfqLgR/b56b67L9S0iUTIwrSAvk3MPegyQNn56+1C/m3ytwy1YU+nAuqDA==",
+    "Confluent.Kafka/2.13.1": {
+      "sha512": "U/YV8nRXkZdjgF9o2XSG4zO1+NlyCfC7a3ZpQQHzNpyRvQfL/j261Ng/TKJ0CY/m0e2HlxLqZfl16wI/l+Zxqg==",
       "type": "package",
-      "path": "confluent.kafka/2.6.1",
+      "path": "confluent.kafka/2.13.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
         "confluent-logo.png",
-        "confluent.kafka.2.6.1.nupkg.sha512",
+        "confluent.kafka.2.13.1.nupkg.sha512",
         "confluent.kafka.nuspec",
         "lib/net462/Confluent.Kafka.dll",
         "lib/net462/Confluent.Kafka.xml",
@@ -1817,10 +1817,10 @@
         "readme.md"
       ]
     },
-    "librdkafka.redist/2.6.1": {
-      "sha512": "RcpH/eqmfp08RmfeQdHeJEz0OaAcYWJo8EqQiU4ohDrBygIXbWhCTksUFkhYGqap/5Ycm+HC9RVSlwetFo9SlA==",
+    "librdkafka.redist/2.13.0": {
+      "sha512": "PCtGYOJvqDo+dqxRsBidc6OJGGSCIqmh0wIWgTQljuzaxeAM8uAheNwZ/6o60hueObJj1vPczNLLeoLEu1+Q3g==",
       "type": "package",
-      "path": "librdkafka.redist/2.6.1",
+      "path": "librdkafka.redist/2.13.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1836,7 +1836,7 @@
         "build/native/lib/win/x86/win-x86-Release/v142/librdkafka.lib",
         "build/native/lib/win/x86/win-x86-Release/v142/librdkafkacpp.lib",
         "build/native/librdkafka.redist.targets",
-        "librdkafka.redist.2.6.1.nupkg.sha512",
+        "librdkafka.redist.2.13.0.nupkg.sha512",
         "librdkafka.redist.nuspec",
         "runtimes/linux-arm64/native/librdkafka.so",
         "runtimes/linux-x64/native/alpine-librdkafka.so",
@@ -3814,28 +3814,24 @@
         "xunit.extensibility.execution.nuspec"
       ]
     },
-    "xunit.runner.visualstudio/2.8.2": {
-      "sha512": "vm1tbfXhFmjFMUmS4M0J0ASXz3/U5XvXBa6DOQUL3fEz4Vt6YPhv+ESCarx6M6D+9kJkJYZKCNvJMas1+nVfmQ==",
+    "xunit.runner.visualstudio/3.1.5": {
+      "sha512": "tKi7dSTwP4m5m9eXPM2Ime4Kn7xNf4x4zT9sdLO/G4hZVnQCRiMTWoSZqI/pYTVeI27oPPqHBKYI/DjJ9GsYgA==",
       "type": "package",
-      "path": "xunit.runner.visualstudio/2.8.2",
+      "path": "xunit.runner.visualstudio/3.1.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "_content/README.md",
         "_content/logo-128-transparent.png",
-        "build/net462/xunit.abstractions.dll",
-        "build/net462/xunit.runner.reporters.net452.dll",
-        "build/net462/xunit.runner.utility.net452.dll",
-        "build/net462/xunit.runner.visualstudio.props",
-        "build/net462/xunit.runner.visualstudio.testadapter.dll",
-        "build/net6.0/xunit.abstractions.dll",
-        "build/net6.0/xunit.runner.reporters.netcoreapp10.dll",
-        "build/net6.0/xunit.runner.utility.netcoreapp10.dll",
-        "build/net6.0/xunit.runner.visualstudio.props",
-        "build/net6.0/xunit.runner.visualstudio.testadapter.dll",
-        "lib/net462/_._",
-        "lib/net6.0/_._",
-        "xunit.runner.visualstudio.2.8.2.nupkg.sha512",
+        "build/net472/xunit.abstractions.dll",
+        "build/net472/xunit.runner.visualstudio.props",
+        "build/net472/xunit.runner.visualstudio.testadapter.dll",
+        "build/net8.0/xunit.abstractions.dll",
+        "build/net8.0/xunit.runner.visualstudio.props",
+        "build/net8.0/xunit.runner.visualstudio.testadapter.dll",
+        "lib/net472/_._",
+        "lib/net8.0/_._",
+        "xunit.runner.visualstudio.3.1.5.nupkg.sha512",
         "xunit.runner.visualstudio.nuspec"
       ]
     },
@@ -3907,7 +3903,7 @@
       "System.Text.Encoding.CodePages >= 9.0.0",
       "coverlet.collector >= 6.0.2",
       "xunit >= 2.9.2",
-      "xunit.runner.visualstudio >= 2.8.2"
+      "xunit.runner.visualstudio >= 3.1.5"
     ]
   },
   "packageFolders": {
@@ -4007,7 +4003,7 @@
           },
           "xunit.runner.visualstudio": {
             "target": "Package",
-            "version": "[2.8.2, )"
+            "version": "[3.1.5, )"
           }
         },
         "imports": [

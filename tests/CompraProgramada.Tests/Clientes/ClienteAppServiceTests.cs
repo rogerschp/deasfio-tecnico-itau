@@ -73,6 +73,23 @@ public class ClienteAppServiceTests
         _clienteRepo.Verify(r => r.SalvarAsync(It.Is<Cliente>(c => !c.Ativo && c.DataSaida.HasValue), It.IsAny<CancellationToken>()), Times.Once);
     }
     [Fact]
+    public async Task SairAsync_ClienteJaInativo_LancaInvalidOperationException()
+    {
+        var cliente = new Cliente { Id = 1, Nome = "João", Ativo = false };
+        _clienteRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>())).ReturnsAsync(cliente);
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => _sut.SairAsync(1));
+        Assert.Contains("saído", ex.Message, StringComparison.OrdinalIgnoreCase);
+        _clienteRepo.Verify(r => r.SalvarAsync(It.IsAny<Cliente>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+    [Fact]
+    public async Task AderirAsync_CpfComTamanhoDiferenteDe11_LancaArgumentException()
+    {
+        _clienteRepo.Setup(r => r.GetByCpfAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync((Cliente?)null);
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() =>
+            _sut.AderirAsync("João", "123", "joao@email.com", 3000m));
+        Assert.Contains("CPF", ex.Message);
+    }
+    [Fact]
     public async Task AlterarValorMensalAsync_ClienteInexistente_RetornaNull()
     {
         _clienteRepo.Setup(r => r.GetByIdAsync(999, It.IsAny<CancellationToken>())).ReturnsAsync((Cliente?)null);
@@ -156,6 +173,15 @@ public class ClienteAppServiceTests
         Assert.Null(result);
     }
     [Fact]
+    public async Task GetCarteiraAsync_ContaInexistente_RetornaNull()
+    {
+        _clienteRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Cliente { Id = 1, ContaGraficaId = 10 });
+        _contaRepo.Setup(r => r.GetByIdAsync(10, It.IsAny<CancellationToken>())).ReturnsAsync((ContaGrafica?)null);
+        var result = await _sut.GetCarteiraAsync(1);
+        Assert.Null(result);
+    }
+    [Fact]
     public async Task GetRentabilidadeAsync_ClienteComCarteiraEAportes_RetornaRentabilidade()
     {
         _clienteRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
@@ -179,6 +205,28 @@ public class ClienteAppServiceTests
         _clienteRepo.Setup(r => r.GetByIdAsync(999, It.IsAny<CancellationToken>())).ReturnsAsync((Cliente?)null);
         var result = await _sut.GetRentabilidadeAsync(999);
         Assert.Null(result);
+    }
+    [Fact]
+    public async Task GetRentabilidadeAsync_ComMultiplosAportes_PreencheEvolucaoCarteira()
+    {
+        _clienteRepo.Setup(r => r.GetByIdAsync(1, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Cliente { Id = 1, Nome = "Maria", ContaGraficaId = 10 });
+        _contaRepo.Setup(r => r.GetByIdAsync(10, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ContaGrafica { Id = 10, NumeroConta = "FLH-001", Tipo = "FILHOTE", DataCriacao = DateTime.UtcNow, ClienteId = 1 });
+        _custodiaRepo.Setup(r => r.GetPorContaAsync(10, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<CustodiaFilhote> { new() { Ticker = "PETR4", Quantidade = 20, PrecoMedio = 35m } });
+        _aporteRepo.Setup(r => r.GetPorClienteOrdenadoPorDataAsync(1, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Aporte>
+            {
+                new(1, new DateOnly(2026, 2, 5), 1000m, 1),
+                new(1, new DateOnly(2026, 2, 15), 1000m, 2),
+                new(1, new DateOnly(2026, 2, 25), 1000m, 3)
+            });
+        var result = await _sut.GetRentabilidadeAsync(1);
+        Assert.NotNull(result);
+        Assert.Equal(3, result.HistoricoAportes.Count);
+        Assert.Equal(3, result.EvolucaoCarteira.Count);
+        Assert.Equal(3000m, result.Rentabilidade.ValorTotalInvestido);
     }
     [Fact]
     public async Task VenderAtivoAsync_QuantidadeInvalida_RetornaNull()

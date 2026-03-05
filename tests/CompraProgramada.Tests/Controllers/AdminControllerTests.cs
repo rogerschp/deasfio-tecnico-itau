@@ -49,6 +49,31 @@ public class AdminControllerTests
         Assert.Same(dto, created.Value);
     }
     [Fact]
+    public async Task CadastrarCesta_ServicoLancaPercentuaisInvalidos_Retorna400()
+    {
+        var itens = new List<ItemCestaRequest>
+        {
+            new("PETR4", 20m), new("VALE3", 20m), new("ITUB4", 20m), new("BBDC4", 20m), new("WEGE3", 15m)
+        };
+        _cestaService.Setup(s => s.CadastrarOuAlterarAsync(It.IsAny<string>(), It.IsAny<IReadOnlyList<(string, decimal)>>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ArgumentException("A soma dos percentuais deve ser exatamente 100%."));
+        var result = await _controller.CadastrarCesta(new CestaRequest("Top Five", itens));
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal(400, badRequest.StatusCode);
+        Assert.NotNull(badRequest.Value);
+    }
+    [Fact]
+    public async Task CadastrarCesta_ServicoLancaQuantidadeAtivosInvalida_Retorna400()
+    {
+        var itens = new List<ItemCestaRequest> { new("PETR4", 25m), new("VALE3", 25m), new("ITUB4", 25m), new("WEGE3", 25m) };
+        _cestaService.Setup(s => s.CadastrarOuAlterarAsync(It.IsAny<string>(), It.IsAny<IReadOnlyList<(string, decimal)>>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ArgumentException("A cesta deve conter exatamente 5 ativos. Quantidade informada: 4."));
+        var result = await _controller.CadastrarCesta(new CestaRequest("Top Five", itens));
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal(400, badRequest.StatusCode);
+        Assert.NotNull(badRequest.Value);
+    }
+    [Fact]
     public async Task GetCestaAtual_NenhumaCesta_Retorna404()
     {
         _cestaService.Setup(s => s.GetAtualAsync(It.IsAny<CancellationToken>())).ReturnsAsync((CestaResponseDto?)null);
