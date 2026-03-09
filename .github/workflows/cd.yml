@@ -37,7 +37,7 @@ jobs:
 
       - name: Docker meta
         id: docker
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/compraprogramada
           tags: |
